@@ -37,19 +37,23 @@ public class LampCardviewAdapter extends RecyclerView.Adapter<LampCardviewAdapte
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_cardlamps, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.lamp_cardlayout, parent, false);
         ViewHolder view = new ViewHolder(v);
         return view;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.lampName.setText(lamps.get(position).getId());
+    }
 
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
     }
 
     @Override
     public int getItemCount() {
         return lamps.size();
     }
-
 }

@@ -21,12 +21,13 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         buildArrayList();
 
-        recyclerViewLamps = (RecyclerView) findViewById(R.id.recyclerViewLamps);
+        lampAdapter = new LampCardviewAdapter(lamps);
         lampLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerViewLamps = (RecyclerView) findViewById(R.id.recyclerViewLamps);
 
         recyclerViewLamps.setHasFixedSize(false);
         recyclerViewLamps.setLayoutManager(lampLayoutManager);
-
+        recyclerViewLamps.setAdapter(lampAdapter);
     }
 
     private void buildArrayList() {
