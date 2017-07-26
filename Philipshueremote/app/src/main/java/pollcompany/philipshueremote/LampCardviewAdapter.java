@@ -44,7 +44,7 @@ public class LampCardviewAdapter extends RecyclerView.Adapter<LampCardviewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.lampName.setText(lamps.get(position).getId());
+        holder.lampName.setText(lamps.get(position).getName());
     }
 
     @Override

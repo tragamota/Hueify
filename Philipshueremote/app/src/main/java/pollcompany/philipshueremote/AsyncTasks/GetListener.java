@@ -4,6 +4,7 @@ package pollcompany.philipshueremote.AsyncTasks;
  * Created by Ian on 22-7-2017.
  */
 
-interface GetListener {
+public interface GetListener {
     void updateContent();
+    void notReachable();
 }
