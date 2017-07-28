@@ -39,6 +39,7 @@ public class HomeActivity extends AppCompatActivity {
         buildGetTask();
 
         if(savedInstanceState != null) {
+            assert (Collection<? extends Lamp>) savedInstanceState.getSerializable("LAMP_ARRAY") != null;
             lamps.addAll((Collection<? extends Lamp>) savedInstanceState.getSerializable("LAMP_ARRAY"));
         }
 

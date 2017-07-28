@@ -8,7 +8,6 @@ import java.io.Serializable;
 
 public class Lamp implements Serializable{
     private boolean onOff;
-
     private String id;
     private String name;
     private String type;
