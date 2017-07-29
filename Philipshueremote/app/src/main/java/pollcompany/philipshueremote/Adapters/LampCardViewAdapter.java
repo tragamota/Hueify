@@ -1,4 +1,4 @@
-package pollcompany.philipshueremote;
+package pollcompany.philipshueremote.Adapters;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -11,16 +11,17 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import pollcompany.philipshueremote.Lamp;
+import pollcompany.philipshueremote.R;
+
 /**
  * Created by Ian on 21-7-2017.
  */
 
-//https://code.tutsplus.com/tutorials/getting-started-with-recyclerview-and-cardview-on-android--cms-23465
-
-public class LampCardviewAdapter extends RecyclerView.Adapter<LampCardviewAdapter.ViewHolder> {
+public class LampCardViewAdapter extends RecyclerView.Adapter<LampCardViewAdapter.ViewHolder> {
     private List<Lamp> lamps;
 
-    public LampCardviewAdapter(List<Lamp> lamps) {
+    public LampCardViewAdapter(List<Lamp> lamps) {
         this.lamps = lamps;
     }
 
