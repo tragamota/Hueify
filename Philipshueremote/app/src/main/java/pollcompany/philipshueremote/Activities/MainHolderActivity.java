@@ -1,5 +1,7 @@
 package pollcompany.philipshueremote.Activities;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ public class MainHolderActivity extends AppCompatActivity {
     private ViewPager mainViewPage;
     private FragmentViewPageAdapter viewPageAdapter;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +51,6 @@ public class MainHolderActivity extends AppCompatActivity {
 
             }
         });
-
         tabLayout.setSelectedTabIndicatorColor(getResources().getColor(android.R.color.white, null));
     }
 }

@@ -33,7 +33,7 @@ public class AllLightsTask extends AsyncTask<String, Void, String> {
         BufferedReader reader = null;
         String response = "";
 
-        String urlAdress = "http://" + strings[0] + "/api/" + strings[1] + "/lights";
+        String urlAdress = "http://192.168.0.39:8000" + "/api/" + "newdeveloper" + "/lights";
         try {
             URL url = new URL(urlAdress);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -52,6 +52,8 @@ public class AllLightsTask extends AsyncTask<String, Void, String> {
                 inputStream.close();
                 reader.close();
             }
+
+            connection.disconnect();
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -62,71 +64,13 @@ public class AllLightsTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String response) {
-        JSONObject responseObject;
+        JSONObject object;
 
         if(response != null) {
             try {
                 lampList.clear();
-                //responseObject = new JSONObject(response);
-                JSONObject object = new JSONObject("{\n" +
-                        "\n" +
-                        "    \"1\": {\n" +
-                        "        \"state\": {\n" +
-                        "            \"on\": true,\n" +
-                        "            \"bri\": 144,\n" +
-                        "            \"hue\": 13088,\n" +
-                        "            \"sat\": 212,\n" +
-                        "            \"xy\": [0.5128,0.4147],\n" +
-                        "            \"ct\": 467,\n" +
-                        "            \"alert\": \"none\",\n" +
-                        "            \"effect\": \"none\",\n" +
-                        "            \"colormode\": \"xy\",\n" +
-                        "            \"reachable\": true\n" +
-                        "        },\n" +
-                        "        \"type\": \"Extended color light\",\n" +
-                        "        \"name\": \"Hue Lamp 1\",\n" +
-                        "        \"modelid\": \"LCT001\",\n" +
-                        "        \"swversion\": \"66009461\",\n" +
-                        "        \"pointsymbol\": {\n" +
-                        "            \"1\": \"none\",\n" +
-                        "            \"2\": \"none\",\n" +
-                        "            \"3\": \"none\",\n" +
-                        "            \"4\": \"none\",\n" +
-                        "            \"5\": \"none\",\n" +
-                        "            \"6\": \"none\",\n" +
-                        "            \"7\": \"none\",\n" +
-                        "            \"8\": \"none\"\n" +
-                        "        }\n" +
-                        "    },\n" +
-                        "    \"2\": {\n" +
-                        "        \"state\": {\n" +
-                        "            \"on\": false,\n" +
-                        "            \"bri\": 0,\n" +
-                        "            \"hue\": 0,\n" +
-                        "            \"sat\": 0,\n" +
-                        "            \"xy\": [0,0],\n" +
-                        "            \"ct\": 0,\n" +
-                        "            \"alert\": \"none\",\n" +
-                        "            \"effect\": \"none\",\n" +
-                        "            \"colormode\": \"hs\",\n" +
-                        "            \"reachable\": true\n" +
-                        "        },\n" +
-                        "        \"type\": \"Extended color light\",\n" +
-                        "        \"name\": \"Hue Lamp 2\",\n" +
-                        "        \"modelid\": \"LCT001\",\n" +
-                        "        \"swversion\": \"66009461\",\n" +
-                        "        \"pointsymbol\": {\n" +
-                        "            \"1\": \"none\",\n" +
-                        "            \"2\": \"none\",\n" +
-                        "            \"3\": \"none\",\n" +
-                        "            \"4\": \"none\",\n" +
-                        "            \"5\": \"none\",\n" +
-                        "            \"6\": \"none\",\n" +
-                        "            \"7\": \"none\",\n" +
-                        "            \"8\": \"none\"\n" +
-                        "        }\n" +
-                        "    }\n" +
-                        "}");
+                object = new JSONObject(response);
+
                 for(int i = 0; i < object.length(); i++) {
                     boolean onOff;
                     String name;
@@ -149,11 +93,10 @@ public class AllLightsTask extends AsyncTask<String, Void, String> {
 
                     lampList.add(new Lamp(onOff, id, name, type, brightness, hue, sat));
                 }
-
-                System.out.println(lampList);
                 listener.updateContent();
             } catch (JSONException e) {
                 e.printStackTrace();
+                listener.notReachable();
             }
         }
         else {

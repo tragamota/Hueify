@@ -5,9 +5,10 @@
     android:layout_width="match_parent" android:layout_height="wrap_content"
     android:id="@+id/LampCardView"
     android:layout_margin="5dp"
+    android:foreground="?android:attr/selectableItemBackground"
     android:clickable="true"
-    app:cardElevation="4dp"
-    app:cardCornerRadius="4dp"
+    app:cardElevation="2dp"
+    app:cardCornerRadius="6dp"
     app:contentPadding="1dp">
 
     <android.support.constraint.ConstraintLayout
@@ -66,7 +67,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.473" />
 
-        <Switch
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/lampcardOnOffSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -75,9 +76,9 @@
             android:layout_marginRight="15dp"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            android:theme="@style/SwitchStyle"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="15dp" />
-
     </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>

@@ -1,5 +1,7 @@
 package pollcompany.philipshueremote;
 
+import android.graphics.Color;
+
 import java.io.Serializable;
 
 /**
@@ -14,6 +16,7 @@ public class Lamp implements Serializable{
     private int brightness;
     private int hue;
     private int saturation;
+    private int hsvColor;
 
     public Lamp(boolean onOff, String id, String name, String type, int brightness, int hue, int saturation) {
         this.onOff = onOff;
@@ -23,6 +26,23 @@ public class Lamp implements Serializable{
         this.brightness = brightness;
         this.hue = hue;
         this.saturation = saturation;
+        hsvColor = calculateHSV(0.9f);
+    }
+
+    public int calculateHSV(float alpha) {
+        int color;
+        float hsv[] = new float[3];
+        if(hue != 0 && saturation != 0 && brightness != 0) {
+            hsv[0] = (hue / 65535f) * 360f;
+            hsv[1] = (saturation / 255f);
+            hsv[2] = (brightness / 255f);
+        }
+        else {
+            return 0;
+        }
+
+        color = Color.HSVToColor((int) (alpha*255), hsv);
+        return color;
     }
 
     public String getId() {
@@ -59,5 +79,29 @@ public class Lamp implements Serializable{
 
     public void setSaturation(int saturation) {
         this.saturation = saturation;
+    }
+
+    public boolean isOnOff() {
+        return onOff;
+    }
+
+    public void setOnOff(boolean onOff) {
+        this.onOff = onOff;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getHsvColor() {
+        return hsvColor;
+    }
+
+    public void setHsvColor(int hsvColor) {
+        this.hsvColor = hsvColor;
     }
 }

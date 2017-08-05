@@ -51,7 +51,13 @@ public class LampFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getLampsTask.execute("1", " 1");
+                if(getLampsTask.getStatus().equals(AsyncTask.Status.PENDING)) {
+                    getLampsTask.execute();
+                }
+                if(getLampsTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
+                    buildGetTask();
+                    getLampsTask.execute();
+                }
             }
         });
 
@@ -69,7 +75,7 @@ public class LampFragment extends Fragment {
         recyclerViewLamps.setLayoutManager(lampLayoutManager);
         recyclerViewLamps.setAdapter(lampAdapter);
 
-        getLampsTask.execute("1", "2");
+        getLampsTask.execute();
         return view;
     }
 

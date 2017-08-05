@@ -9,8 +9,8 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewLamps"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
