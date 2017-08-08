@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import pollcompany.philipshueremote.Lamp;
@@ -19,11 +20,9 @@ import pollcompany.philipshueremote.Lamp;
  */
 
 public class AllLightsTask extends AsyncTask<String, Void, String> {
-    private List<Lamp> lampList;
     private GetListener listener;
 
-    public AllLightsTask(List<Lamp> lampList, GetListener listener) {
-        this.lampList = lampList;
+    public AllLightsTask(GetListener listener) {
         this.listener = listener;
     }
 
@@ -65,10 +64,9 @@ public class AllLightsTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String response) {
         JSONObject object;
-
+        List<Lamp> lampsToAdd = new ArrayList<>();
         if(response != null) {
             try {
-                lampList.clear();
                 object = new JSONObject(response);
 
                 for(int i = 0; i < object.length(); i++) {
@@ -91,9 +89,9 @@ public class AllLightsTask extends AsyncTask<String, Void, String> {
                     brightness = lampState.getInt("bri");
                     sat = lampState.getInt("sat");
 
-                    lampList.add(new Lamp(onOff, id, name, type, brightness, hue, sat));
+                    lampsToAdd.add(new Lamp(onOff, id, name, type, brightness, hue, sat));
                 }
-                listener.updateContent();
+                listener.updateContent(lampsToAdd);
             } catch (JSONException e) {
                 e.printStackTrace();
                 listener.notReachable();

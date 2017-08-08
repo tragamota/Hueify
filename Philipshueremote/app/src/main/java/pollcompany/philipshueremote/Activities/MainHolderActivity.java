@@ -28,7 +28,6 @@ public class MainHolderActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Lamps"));
         tabLayout.addTab(tabLayout.newTab().setText("Groups"));
-        tabLayout.addTab(tabLayout.newTab().setText("Actions"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         viewPageAdapter = new FragmentViewPageAdapter(getSupportFragmentManager());

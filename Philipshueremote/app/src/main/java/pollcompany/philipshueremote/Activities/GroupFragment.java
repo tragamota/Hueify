@@ -1,14 +1,13 @@
 package pollcompany.philipshueremote.Activities;
 
-
-import android.content.Context;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,48 +15,43 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import pollcompany.philipshueremote.Adapters.LampCardViewAdapter;
+import pollcompany.philipshueremote.Adapters.GroupCardViewAdapter;
 import pollcompany.philipshueremote.AsyncTasks.AllLightsTask;
 import pollcompany.philipshueremote.AsyncTasks.GetListener;
+import pollcompany.philipshueremote.Group;
 import pollcompany.philipshueremote.Lamp;
 import pollcompany.philipshueremote.R;
 
-public class LampFragment extends Fragment {
-    private List<Lamp> lamps;
+public class GroupFragment extends Fragment {
+    private List<Group> groups;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private RecyclerView recyclerViewLamps;
-    private RecyclerView.Adapter lampAdapter;
-    private RecyclerView.LayoutManager lampLayoutManager;
+    private RecyclerView recyclerViewGroups;
+    private RecyclerView.Adapter groupAdapter;
+    private RecyclerView.LayoutManager groupLayoutManager;
 
     private AllLightsTask getLampsTask;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_lamp, container, false);
-        lamps = new ArrayList<>();
+        View view = inflater.inflate(R.layout.activity_group_fragment, container, false);
+        groups = new ArrayList<>();
         buildGetTask();
 
         List<String> fileList = Arrays.asList(getContext().fileList());
 
-        if(savedInstanceState == null && fileList.contains("LampSaveFile.lmp")) {
+        if(savedInstanceState == null && fileList.contains("GroupSaveFile.lmp")) {
             try {
-                FileInputStream fileInputStream = getContext().openFileInput("LampSaveFile.lmp");
+                FileInputStream fileInputStream = getContext().openFileInput("GroupSaveFile.lmp");
                 ObjectInputStream inputReader = new ObjectInputStream(fileInputStream);
-                lamps.addAll((List<Lamp>) inputReader.readObject());
+                groups.addAll((List<Group>) inputReader.readObject());
                 inputReader.close();
                 fileInputStream.close();
             }
@@ -67,11 +61,12 @@ public class LampFragment extends Fragment {
         }
 
         if(savedInstanceState != null) {
-            assert (Collection<? extends Lamp>) savedInstanceState.getSerializable("LAMP_ARRAY") != null;
-            lamps.addAll((Collection<? extends Lamp>) savedInstanceState.getSerializable("LAMP_ARRAY"));
+            if ((Collection<? extends Group>) savedInstanceState.getSerializable("GROUP_ARRAY") != null) {
+                groups.addAll((Collection<? extends Group>) savedInstanceState.getSerializable("GROUP_ARRAY"));
+            }
         }
 
-        swipeRefreshLayout = view.findViewById(R.id.refreshLayoutLamps);
+        swipeRefreshLayout = view.findViewById(R.id.refreshLayoutGroup);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -91,15 +86,14 @@ public class LampFragment extends Fragment {
                 r.getColor(android.R.color.holo_orange_light, null),
                 r.getColor(android.R.color.holo_red_light, null));
 
-        lampAdapter = new LampCardViewAdapter(lamps);
-        lampLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-        recyclerViewLamps = view.findViewById(R.id.recyclerViewLamps);
+        groupAdapter = new GroupCardViewAdapter(groups);
+        groupLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        recyclerViewGroups = view.findViewById(R.id.recyclerViewGroup);
 
-        recyclerViewLamps.setHasFixedSize(false);
-        recyclerViewLamps.setLayoutManager(lampLayoutManager);
-        recyclerViewLamps.setAdapter(lampAdapter);
+        recyclerViewGroups.setHasFixedSize(false);
+        recyclerViewGroups.setLayoutManager(groupLayoutManager);
+        recyclerViewGroups.setAdapter(groupAdapter);
 
-        getLampsTask.execute();
         return view;
     }
 
@@ -107,9 +101,9 @@ public class LampFragment extends Fragment {
         getLampsTask = new AllLightsTask(new GetListener() {
             @Override
             public void updateContent(List items) {
-                lamps.clear();
-                lamps.addAll(items);
-                lampAdapter.notifyDataSetChanged();
+                groups.clear();
+                groups.addAll(items);
+                groupAdapter.notifyDataSetChanged();
                 if(swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -126,33 +120,4 @@ public class LampFragment extends Fragment {
         });
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable("LAMP_ARRAY", (Serializable) lamps);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if(!lamps.isEmpty()) {
-            try {
-                FileOutputStream fileOutputStream = getContext().openFileOutput("LampSaveFile.lmp", Context.MODE_PRIVATE);
-                ObjectOutputStream outputWriter = new ObjectOutputStream(fileOutputStream);
-                outputWriter.writeObject(lamps);
-                outputWriter.close();
-                fileOutputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if(getLampsTask.getStatus() == AsyncTask.Status.RUNNING) {
-            getLampsTask.cancel(true);
-        }
-    }
 }

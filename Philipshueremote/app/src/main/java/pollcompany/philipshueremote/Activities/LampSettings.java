@@ -22,6 +22,8 @@ public class LampSettings extends AppCompatActivity {
     private ValueBar brightnessBar;
     private SaturationBar saturationBar;
 
+    private byte totalColorChanges = 0;
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +54,14 @@ public class LampSettings extends AppCompatActivity {
         colorPicker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
             @Override
             public void onColorChanged(final int color) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        new ColorTask(color).execute(lamp.getId());
-                    }
-                }, 200);
+                if(totalColorChanges < 32 && totalColorChanges % 2 == 0) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            new ColorTask(color, totalColorChanges).execute(lamp.getId());
+                        }
+                    }, 200);
+                }
             }
         });
     }

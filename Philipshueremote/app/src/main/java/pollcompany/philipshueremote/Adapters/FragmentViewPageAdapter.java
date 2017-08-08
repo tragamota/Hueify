@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import pollcompany.philipshueremote.Activities.GroupFragment;
 import pollcompany.philipshueremote.Activities.LampFragment;
 
 /**
@@ -17,8 +18,15 @@ public class FragmentViewPageAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Fragment fragment = new LampFragment();
-
+        Fragment fragment = null;
+        switch (position) {
+            case 0:
+                fragment = new LampFragment();
+                break;
+            case 1:
+                fragment = new GroupFragment();
+                break;
+        }
         return fragment;
     }
 

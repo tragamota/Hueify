@@ -8,6 +8,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import pollcompany.philipshueremote.Lamp;
 
 /**
  * Created by Ian on 3-8-2017.
@@ -15,9 +19,11 @@ import java.net.URL;
 
 public class OnOffTask extends AsyncTask<String, Void, Void> {
     private boolean onOffState;
+    private GetListener listener;
 
-    public OnOffTask(boolean state) {
+    public OnOffTask(boolean state, GetListener listener) {
         onOffState = state;
+        this.listener = listener;
     }
 
     @Override
@@ -26,7 +32,6 @@ public class OnOffTask extends AsyncTask<String, Void, Void> {
         BufferedWriter writer = null;
 
         String urlAdress = "http://192.168.0.39:8000" + "/api/" + "newdeveloper" + "/lights/" + strings[0] + "/state";
-
         try {
             URL url = new URL(urlAdress);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -60,5 +65,10 @@ public class OnOffTask extends AsyncTask<String, Void, Void> {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        listener.updateContent(new ArrayList<Lamp>());
     }
 }

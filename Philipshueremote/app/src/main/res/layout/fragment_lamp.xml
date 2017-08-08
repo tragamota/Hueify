@@ -4,19 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="pollcompany.philipshueremote.Activities.MainHolderActivity"
-    android:id="@+id/refreshLayoutLamps">
+    android:id="@+id/refreshLayoutLamps"
+    tools:context="pollcompany.philipshueremote.Activities.MainHolderActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerViewLamps"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        android:id="@+id/recyclerViewLamps"
+        android:scrollbars="vertical"/>
 
 </android.support.v4.widget.SwipeRefreshLayout>

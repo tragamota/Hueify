@@ -17,26 +17,28 @@ import java.net.URL;
 
 public class ColorTask extends AsyncTask<String, Void, String> {
     private float[] hsv = new float[3];
+    private byte totalColorChangeTasks;
 
-    public ColorTask(int color) {
+    public ColorTask(int color, byte totalColorChanges) {
         Color.colorToHSV(color, hsv);
+        totalColorChangeTasks = totalColorChanges;
     }
 
     @Override
     protected String doInBackground(String... strings) {
         OutputStream outputStream = null;
         BufferedWriter writer = null;
+        totalColorChangeTasks++;
 
         String urlAdress = "http://192.168.0.39:8000" + "/api/" + "newdeveloper" + "/lights/" + strings[0] + "/state";
-
         try {
             URL url = new URL(urlAdress);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("PUT");
             connection.setRequestProperty("USER-AGENT", "HueRemoteApp.4.0");
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.setReadTimeout(3000);
-            connection.setConnectTimeout(3000);
+            connection.setReadTimeout(150);
+            connection.setConnectTimeout(150);
             connection.setDoOutput(true);
 
             int brightness = (int) (hsv[2] * 255);
@@ -63,6 +65,7 @@ public class ColorTask extends AsyncTask<String, Void, String> {
         catch (IOException e){
             e.printStackTrace();
         }
+        totalColorChangeTasks--;
         return null;
     }
 }
