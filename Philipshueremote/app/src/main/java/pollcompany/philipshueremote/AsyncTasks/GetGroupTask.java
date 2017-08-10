@@ -1,9 +1,10 @@
 package pollcompany.philipshueremote.AsyncTasks;
 
-
 import android.os.AsyncTask;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,26 +14,26 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import pollcompany.philipshueremote.Lamp;
+import pollcompany.philipshueremote.Group;
 
 /**
- * Created by Ian on 22-7-2017.
+ * Created by Ian on 8-8-2017.
  */
 
-public class AllLightsTask extends AsyncTask<String, Void, String> {
+public class GetGroupTask extends AsyncTask<String, Void, String> {
     private GetListener listener;
 
-    public AllLightsTask(GetListener listener) {
+    public GetGroupTask(GetListener listener) {
         this.listener = listener;
     }
 
     @Override
     protected String doInBackground(String... strings) {
-        InputStream inputStream = null;
-        BufferedReader reader = null;
+        InputStream inputStream;
+        BufferedReader reader;
         String response = "";
 
-        String urlAdress = "http://192.168.0.39:8000" + "/api/" + "newdeveloper" + "/lights";
+        String urlAdress = "http://192.168.0.39:8000" + "/api/" + "newdeveloper" + "/groups";
         try {
             URL url = new URL(urlAdress);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -47,16 +48,15 @@ public class AllLightsTask extends AsyncTask<String, Void, String> {
                 response += readline;
             }
 
-            if(inputStream != null) {
+            if (inputStream != null) {
                 inputStream.close();
                 reader.close();
             }
 
             connection.disconnect();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            return "";
+            return null;
         }
         return response;
     }
@@ -64,40 +64,27 @@ public class AllLightsTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String response) {
         JSONObject object;
-        List<Lamp> lampsToAdd = new ArrayList<>();
-        if(response != null) {
+        List<Group> groupsToAdd = new ArrayList<>();
+        if (response != null) {
             try {
                 object = new JSONObject(response);
 
-                for(int i = 0; i < object.length(); i++) {
-                    boolean onOff;
+                for (int i = 0; i < object.length(); i++) {
                     String name;
                     String id;
-                    String type;
-                    int hue;
-                    int brightness;
-                    int sat;
 
                     JSONObject lampObject = object.getJSONObject(("" + (i + 1)));
                     id = String.valueOf((i + 1));
                     name = lampObject.getString("name");
-                    type = lampObject.getString("type");
 
-                    JSONObject lampState = lampObject.getJSONObject("state");
-                    onOff = lampState.getBoolean("on");
-                    hue = lampState.getInt("hue");
-                    brightness = lampState.getInt("bri");
-                    sat = lampState.getInt("sat");
-
-                    lampsToAdd.add(new Lamp(onOff, id, name, type, brightness, hue, sat));
+                    groupsToAdd.add(new Group(id, name));
                 }
-                listener.updateContent(lampsToAdd);
+                listener.updateContent(groupsToAdd);
             } catch (JSONException e) {
                 e.printStackTrace();
                 listener.notReachable();
             }
-        }
-        else {
+        } else {
             listener.notReachable();
         }
     }

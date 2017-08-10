@@ -1,9 +1,6 @@
 package pollcompany.philipshueremote.Adapters;
 
 import android.content.Intent;
-import android.graphics.ColorFilter;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.IntentCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
@@ -13,17 +10,13 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import pollcompany.philipshueremote.Activities.LampSettings;
 import pollcompany.philipshueremote.AsyncTasks.GetListener;
 import pollcompany.philipshueremote.AsyncTasks.OnOffTask;
-import pollcompany.philipshueremote.Group;
 import pollcompany.philipshueremote.Lamp;
 import pollcompany.philipshueremote.R;
 

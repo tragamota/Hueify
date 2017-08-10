@@ -1,22 +1,17 @@
 package pollcompany.philipshueremote.Adapters;
 
-import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
 
-import pollcompany.philipshueremote.Activities.LampSettings;
-import pollcompany.philipshueremote.AsyncTasks.GetListener;
-import pollcompany.philipshueremote.AsyncTasks.OnOffTask;
 import pollcompany.philipshueremote.Group;
 import pollcompany.philipshueremote.R;
 

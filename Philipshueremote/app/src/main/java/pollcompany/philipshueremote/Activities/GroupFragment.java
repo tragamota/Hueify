@@ -1,12 +1,12 @@
 package pollcompany.philipshueremote.Activities;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,18 +16,21 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import pollcompany.philipshueremote.Adapters.GroupCardViewAdapter;
-import pollcompany.philipshueremote.AsyncTasks.AllLightsTask;
+import pollcompany.philipshueremote.AsyncTasks.GetGroupTask;
+import pollcompany.philipshueremote.AsyncTasks.GetLightsTask;
 import pollcompany.philipshueremote.AsyncTasks.GetListener;
 import pollcompany.philipshueremote.Group;
-import pollcompany.philipshueremote.Lamp;
 import pollcompany.philipshueremote.R;
 
 public class GroupFragment extends Fragment {
@@ -37,7 +40,7 @@ public class GroupFragment extends Fragment {
     private RecyclerView.Adapter groupAdapter;
     private RecyclerView.LayoutManager groupLayoutManager;
 
-    private AllLightsTask getLampsTask;
+    private GetGroupTask getGroupTask;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,7 +64,7 @@ public class GroupFragment extends Fragment {
         }
 
         if(savedInstanceState != null) {
-            if ((Collection<? extends Group>) savedInstanceState.getSerializable("GROUP_ARRAY") != null) {
+            if (savedInstanceState.getSerializable("GROUP_ARRAY") != null) {
                 groups.addAll((Collection<? extends Group>) savedInstanceState.getSerializable("GROUP_ARRAY"));
             }
         }
@@ -70,12 +73,12 @@ public class GroupFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(getLampsTask.getStatus().equals(AsyncTask.Status.PENDING)) {
-                    getLampsTask.execute();
+                if(getGroupTask.getStatus().equals(AsyncTask.Status.PENDING)) {
+                    getGroupTask.execute();
                 }
-                else if(getLampsTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
+                else if(getGroupTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
                     buildGetTask();
-                    getLampsTask.execute();
+                    getGroupTask.execute();
                 }
             }
         });
@@ -94,11 +97,12 @@ public class GroupFragment extends Fragment {
         recyclerViewGroups.setLayoutManager(groupLayoutManager);
         recyclerViewGroups.setAdapter(groupAdapter);
 
+        getGroupTask.execute();
         return view;
     }
 
     private void buildGetTask() {
-        getLampsTask = new AllLightsTask(new GetListener() {
+        getGroupTask = new GetGroupTask(new GetListener() {
             @Override
             public void updateContent(List items) {
                 groups.clear();
@@ -120,4 +124,33 @@ public class GroupFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("GROUP_ARRAY", (Serializable) groups);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(!groups.isEmpty()) {
+            try {
+                FileOutputStream fileOutputStream = getContext().openFileOutput("GroupSaveFile.lmp", Context.MODE_PRIVATE);
+                ObjectOutputStream outputWriter = new ObjectOutputStream(fileOutputStream);
+                outputWriter.writeObject(groups);
+                outputWriter.close();
+                fileOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(getGroupTask.getStatus() == AsyncTask.Status.RUNNING) {
+            getGroupTask.cancel(true);
+        }
+    }
 }

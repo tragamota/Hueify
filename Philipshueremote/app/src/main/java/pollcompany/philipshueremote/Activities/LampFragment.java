@@ -16,9 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -30,7 +28,7 @@ import java.util.Collection;
 import java.util.List;
 
 import pollcompany.philipshueremote.Adapters.LampCardViewAdapter;
-import pollcompany.philipshueremote.AsyncTasks.AllLightsTask;
+import pollcompany.philipshueremote.AsyncTasks.GetLightsTask;
 import pollcompany.philipshueremote.AsyncTasks.GetListener;
 import pollcompany.philipshueremote.Lamp;
 import pollcompany.philipshueremote.R;
@@ -42,7 +40,7 @@ public class LampFragment extends Fragment {
     private RecyclerView.Adapter lampAdapter;
     private RecyclerView.LayoutManager lampLayoutManager;
 
-    private AllLightsTask getLampsTask;
+    private GetLightsTask getLampsTask;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -104,7 +102,7 @@ public class LampFragment extends Fragment {
     }
 
     private void buildGetTask() {
-        getLampsTask = new AllLightsTask(new GetListener() {
+        getLampsTask = new GetLightsTask(new GetListener() {
             @Override
             public void updateContent(List items) {
                 lamps.clear();

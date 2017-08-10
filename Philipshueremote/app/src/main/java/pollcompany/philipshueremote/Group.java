@@ -1,21 +1,23 @@
 package pollcompany.philipshueremote;
 
+import java.io.Serializable;
+
 /**
  * Created by Ian on 7-8-2017.
  */
 
-public class Group {
-    private int groupID;
+public class Group implements Serializable {
+    private String groupID;
     private String groupName;
     private boolean isOnOff;
 
-    public Group(int groupID, String groupName, boolean isOnOff) {
+    public Group(String groupID, String groupName) {
         this.groupID = groupID;
         this.groupName = groupName;
-        this.isOnOff = isOnOff;
+        this.isOnOff = false;
     }
 
-    public int getGroupID() {
+    public String getGroupID() {
         return groupID;
     }
 
