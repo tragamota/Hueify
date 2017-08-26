@@ -51,9 +51,9 @@ public class LampSettings extends AppCompatActivity {
         colorPicker.addValueBar(brightnessBar);
 
         colorPicker.setColor(lamp.calculateHSV(1.0f));
-        colorPicker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
+        colorPicker.setOnColorSelectedListener(new ColorPicker.OnColorSelectedListener() {
             @Override
-            public void onColorChanged(final int color) {
+            public void onColorSelected(final int color) {
                 if(totalColorChanges < 32 && totalColorChanges % 2 == 0) {
                     new Handler().postDelayed(new Runnable() {
                         @Override

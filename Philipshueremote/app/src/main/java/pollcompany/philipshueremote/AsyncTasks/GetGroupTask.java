@@ -33,7 +33,7 @@ public class GetGroupTask extends AsyncTask<String, Void, String> {
         BufferedReader reader;
         String response = "";
 
-        String urlAdress = "http://192.168.0.39:8000" + "/api/" + "newdeveloper" + "/groups";
+        String urlAdress = "http://192.168.1.110" + "/api/" + "PDnGdnei5sjeQ91Ndo1n1FA5-WJV9qtYKf7dkM6g" + "/groups";
         try {
             URL url = new URL(urlAdress);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

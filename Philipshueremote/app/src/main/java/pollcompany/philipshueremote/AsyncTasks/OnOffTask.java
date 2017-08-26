@@ -30,7 +30,7 @@ public class OnOffTask extends AsyncTask<String, Void, Void> {
         OutputStream outputStream = null;
         BufferedWriter writer = null;
 
-        String urlAdress = "http://192.168.0.39:8000" + "/api/" + "newdeveloper" + "/lights/" + strings[0] + "/state";
+        String urlAdress = "http://192.168.1.110" + "/api/" + "PDnGdnei5sjeQ91Ndo1n1FA5-WJV9qtYKf7dkM6g" + "/lights/" + strings[0] + "/state";
         try {
             URL url = new URL(urlAdress);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

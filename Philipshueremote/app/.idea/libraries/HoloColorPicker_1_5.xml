@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="HoloColorPicker-1.5">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.android/build-cache/f99aefa3962b68af825aab9304810281ea01c4fd/output/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.android/build-cache/f99aefa3962b68af825aab9304810281ea01c4fd/output/res" />
+      <root url="file://$USER_HOME$/.android/build-cache/06c0ca35997ba208a9fde89bc15b2b835e9ba1fe/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/06c0ca35997ba208a9fde89bc15b2b835e9ba1fe/output/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
