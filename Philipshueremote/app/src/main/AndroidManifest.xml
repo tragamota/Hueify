@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.LampSettings" />
-        <activity android:name=".Activities.GroupFragment"></activity>
+        <activity android:name=".Activities.GroupFragment" />
+        <activity android:name=".Activities.StartupActivity"></activity>
     </application>
 
 </manifest>

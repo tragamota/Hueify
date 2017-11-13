@@ -1,6 +1,5 @@
 package pollcompany.philipshueremote.Activities;
 
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.AsyncTask;
@@ -65,7 +64,7 @@ public class LampFragment extends Fragment {
         }
 
         if(savedInstanceState != null) {
-            assert (Collection<? extends Lamp>) savedInstanceState.getSerializable("LAMP_ARRAY") != null;
+            assert savedInstanceState.getSerializable("LAMP_ARRAY") != null;
             lamps.addAll((Collection<? extends Lamp>) savedInstanceState.getSerializable("LAMP_ARRAY"));
         }
 

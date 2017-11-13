@@ -6,12 +6,15 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
 
+import pollcompany.philipshueremote.AsyncTasks.GetListener;
+import pollcompany.philipshueremote.AsyncTasks.OnOffTaskGroup;
 import pollcompany.philipshueremote.Group;
 import pollcompany.philipshueremote.R;
 
@@ -59,6 +62,23 @@ public class GroupCardViewAdapter extends RecyclerView.Adapter<GroupCardViewAdap
         } else {
             holder.onOffSwitch.setChecked(false);
         }
+        holder.onOffSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                holder.progressBar.setVisibility(View.VISIBLE);
+                new OnOffTaskGroup(b, new GetListener() {
+                    @Override
+                    public void updateContent(List items) {
+                        holder.progressBar.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void notReachable() {
+
+                    }
+                }).execute(groups.get(position).getGroupID());
+            }
+        });
     }
 
     @Override
