@@ -1,4 +1,4 @@
-package my.philipshueremote;
+package my.philipshueremote.Init.Activities;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -9,25 +9,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class HueInitFoundFragment extends Fragment {
+import my.philipshueremote.Init.Viewmodels.HueInitBridgeSelectionViewModel;
+import my.philipshueremote.R;
 
-    private HueInitFoundViewModel mViewModel;
+public class HueInitBridgeSelectionFragment extends Fragment {
+    private HueInitBridgeSelectionViewModel slaveViewModel;
 
-    public static HueInitFoundFragment newInstance() {
-        return new HueInitFoundFragment();
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        slaveViewModel = ViewModelProviders.of(this).get(HueInitBridgeSelectionViewModel.class);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.hue_init_found_fragment, container, false);
+        return inflater.inflate(R.layout.hue_init_bridgeselection_fragment, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(HueInitFoundViewModel.class);
-        // TODO: Use the ViewModel
+
     }
 
 }
