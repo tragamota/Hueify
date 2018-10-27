@@ -10,8 +10,9 @@ import java.util.List;
 import my.philipshueremote.Init.Models.BridgeInfo;
 
 public class HueInitBridgeSelectionViewModel extends ViewModel {
-    private MutableLiveData<BridgeInfo> selectedBridge;
     private List<BridgeInfo> bridges = new ArrayList<>();
+
+    private MutableLiveData<BridgeInfo> selectedBridge;
 
     public List<BridgeInfo> getBridges() {
         return bridges;

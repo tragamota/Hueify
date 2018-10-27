@@ -48,8 +48,10 @@ public class MultiCastDiscovery implements Discoverable {
 
     @Override
     public void onStart() {
+        System.out.println(System.currentTimeMillis());
         if(state.getValue() != SearchingStates.SEARCHING) {
             state.postValue(SearchingStates.SEARCHING);
+            bridges.clear();
             if(!bridges.isEmpty()) {
                 bridges.clear();
             }
@@ -59,6 +61,7 @@ public class MultiCastDiscovery implements Discoverable {
 
     @Override
     public void onStop() {
+        System.out.println(System.currentTimeMillis());
         if(state.getValue() == SearchingStates.SEARCHING) {
             state.postValue(SearchingStates.WAITING);
             bridgeDiscoveryManager.stopServiceDiscovery(bridgeDiscoveryListener);
