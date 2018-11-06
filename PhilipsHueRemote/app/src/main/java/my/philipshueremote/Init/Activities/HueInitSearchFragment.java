@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.transition.Transition;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +26,10 @@ import my.philipshueremote.R;
 public class HueInitSearchFragment extends Fragment {
     private HueInitSearchViewModel viewModel;
 
-    private ProgressBar searchIndicatorBar;
-    private TextView searchStatusText;
-    private Button searchStartButton, searchManualButton;
+    private ProgressBar statusIndicatorBar;
+    private TextView statusTextView;
+    private Button searchManualButton;
+    private FloatingActionButton searchNavButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,35 +41,47 @@ public class HueInitSearchFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.hue_init_search_fragment, container, false);
-        searchIndicatorBar = view.findViewById(R.id.Init_Search_FindingProgressCircle);
-        searchStatusText = view.findViewById(R.id.Init_Search_LoadingStatusText);
-        searchStartButton = view.findViewById(R.id.Init_Search_FindButton);
         searchManualButton = view.findViewById(R.id.Init_Search_ManualButton);
+        statusIndicatorBar = view.findViewById(R.id.Init_waiting_ProgressBar);
+        statusTextView = view.findViewById(R.id.Init_waiting_statusText);
+        searchNavButton = view.findViewById(R.id.Init_Search_proceedButton);
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if(getActivity().isTaskRoot()) {
+            getActivity().setTitle("Welkom");
+        }
+        else {
+          getActivity().setTitle("Bridge setup");
+        }
+
         viewModel.getSearchState().observe(this, searchingStates -> {
             if (searchingStates == SearchingStates.FOUND) {
-               //make loading bar go as a checked sign and show how many bridges are found...
-
-               searchStartButton.setText("Proceed");
+                if(viewModel.getBridges().size() > 1) {
+                    statusTextView.setText("Found multiple bridges");
+                }
+                else {
+                    statusTextView.setText("Found a single bridge");
+                }
+                changeProgressBarStatus(false);
+                changeClickableButon(searchNavButton, true);
             }
             else if(searchingStates == SearchingStates.SEARCHING) {
-                //show animation
-
-                changeStatusVisibility(View.VISIBLE, false);
+                statusTextView.setText("Searching for bridges..");
+                changeProgressBarStatus(true);
+                changeClickableButon(searchNavButton, false);
             }
             else {
-
-                //hide animation...
-                changeStatusVisibility(View.GONE, true);
+                statusTextView.setText("No brigde found");
+                changeProgressBarStatus(false);
+                changeClickableButon(searchNavButton, true);
             }
         });
 
-        searchStartButton.setOnClickListener(view -> {
+        searchNavButton.setOnClickListener(view -> {
             if(viewModel.getSearchState().getValue() == SearchingStates.FOUND) {
                 Fragment transitionFragment;
                 String fragmentTag;
@@ -83,9 +98,7 @@ public class HueInitSearchFragment extends Fragment {
                 }
                 transitionFragment.setArguments(transitionBundle);
                 proceedToNextFragment(transitionFragment, null, fragmentTag);
-
                 viewModel.setInitialSearch(false);
-                searchStartButton.setText("Search");
             }
             else {
                 viewModel.startSearching();
@@ -108,10 +121,18 @@ public class HueInitSearchFragment extends Fragment {
         }
     }
 
-    private void changeStatusVisibility(int isVisible, boolean isClickable) {
-        searchIndicatorBar.setVisibility(isVisible);
-        searchStatusText.setVisibility(isVisible);
-        searchStartButton.setClickable(isClickable);
+    private void changeProgressBarStatus(boolean active) {
+        if(active) {
+            statusIndicatorBar.setIndeterminate(active);
+        }
+        else {
+            statusIndicatorBar.setIndeterminate(active);
+            statusIndicatorBar.setProgress(0);
+        }
+    }
+
+    private void changeClickableButon(View view, boolean value) {
+        view.setClickable(value);
     }
 
     private void proceedToNextFragment(Fragment fragment, Transition transition, String tag) {

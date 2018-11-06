@@ -7,6 +7,7 @@ import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,26 +49,24 @@ public class MultiCastDiscovery implements Discoverable {
 
     @Override
     public void onStart() {
-        System.out.println(System.currentTimeMillis());
         if(state.getValue() != SearchingStates.SEARCHING) {
             state.postValue(SearchingStates.SEARCHING);
             bridges.clear();
-            if(!bridges.isEmpty()) {
-                bridges.clear();
-            }
             bridgeDiscoveryManager.discoverServices("_hue._tcp", NsdManager.PROTOCOL_DNS_SD, bridgeDiscoveryListener);
         }
     }
 
     @Override
     public void onStop() {
-        System.out.println(System.currentTimeMillis());
         if(state.getValue() == SearchingStates.SEARCHING) {
-            state.postValue(SearchingStates.WAITING);
+            state.postValue(bridges.isEmpty() ? SearchingStates.WAITING : SearchingStates.FOUND);
             bridgeDiscoveryManager.stopServiceDiscovery(bridgeDiscoveryListener);
+
             for(JsonRequest request : requests) {
                 volleySocket.cancel(request);
+                requests.remove(request);
             }
+            detectionTimer.cancel();
         }
     }
 
@@ -85,7 +84,6 @@ public class MultiCastDiscovery implements Discoverable {
 
             @Override
             public void onDiscoveryStarted(String s) {
-                System.out.println("Started detecting Hue bridges");
                 detectionTimer = new Timer();
                 detectionTimer.schedule(new TimerTask() {
                     @Override
@@ -93,13 +91,12 @@ public class MultiCastDiscovery implements Discoverable {
                         System.out.println("Timer is done!");
                         onStop();
                     }
-                }, 7500);
+                }, 5000);
             }
 
             @Override
             public void onDiscoveryStopped(String s) {
-                System.out.println("Stopped detecting Hue bridges");
-                detectionTimer.cancel();
+
             }
 
             @Override
@@ -125,22 +122,21 @@ public class MultiCastDiscovery implements Discoverable {
     }
 
     private void getBridgeInfo(String ipAdress, int portNumber) {
-        String urlBuilder = "http://" + ipAdress + ":" + portNumber + "/api/NoUser/config";
+        String bridgeUrl = "http://" + ipAdress + ":" + portNumber + "/api/NoUser/config";
 
-        JsonArrayRequest request = new JsonArrayRequest(urlBuilder, response -> {
+        JsonObjectRequest request = new JsonObjectRequest(bridgeUrl,null , response -> {
             String bridgeName, bridgeVersion, bridgeMacAddress, bridgeID;
             try {
-                JSONObject object = (JSONObject) response.get(0);
-                bridgeName = object.getString("name");
-                bridgeMacAddress = object.getString("mac");
-                if(object.has("apiversion")) {
-                    bridgeVersion = object.getString("apiversion");
+                bridgeName = response.getString("name");
+                bridgeMacAddress = response.getString("mac");
+                if(response.has("apiversion")) {
+                    bridgeVersion = response.getString("apiversion");
                 }
                 else {
                     bridgeVersion = "Unknown api version";
                 }
-                if(object.has("bridgeid")) {
-                    bridgeID = object.getString("bridgeid");
+                if(response.has("bridgeid")) {
+                    bridgeID = response.getString("bridgeid");
                 }
                 else {
                     bridgeID = "Unknown bridge ID";

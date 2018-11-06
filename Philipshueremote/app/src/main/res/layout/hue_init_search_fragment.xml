@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootLayout"
@@ -21,42 +22,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ProgressBar
-                android:id="@+id/Init_Search_FindingProgressCircle"
-                android:layout_width="0dp"
-                android:layout_height="175dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="gone" />
-
-            <TextView
-                android:id="@+id/Init_Search_LoadingStatusText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Searching..."
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@+id/Init_Search_FindingProgressCircle"
-                app:layout_constraintEnd_toEndOf="@+id/Init_Search_FindingProgressCircle"
-                app:layout_constraintStart_toStartOf="@+id/Init_Search_FindingProgressCircle"
-                app:layout_constraintTop_toTopOf="@+id/Init_Search_FindingProgressCircle" />
-
             <TextView
                 android:id="@+id/Init_Search_AppInfoText"
                 android:layout_width="0dp"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:text="App init info"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Init_Search_FindingProgressCircle" />
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                android:id="@+id/Init_Search_Status"
+                layout="@layout/init_status_cardview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Init_Search_AppInfoText" />
 
             <Button
                 android:id="@+id/Init_Search_ManualButton"
@@ -64,30 +54,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:text="Go manual..."
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Init_Search_AppInfoText" />
-
-            <Button
-                android:id="@+id/Init_Search_FindButton"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="16dp"
-                android:text="Button"
-                android:clickable="false"
+                android:text="Go manual..."
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Init_Search_ManualButton" />
+                app:layout_constraintTop_toBottomOf="@+id/Init_Search_Status" />
 
         </android.support.constraint.ConstraintLayout>
 
     </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/Init_Search_proceedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/pushlink_bridge"
+        app:elevation="5dp"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
