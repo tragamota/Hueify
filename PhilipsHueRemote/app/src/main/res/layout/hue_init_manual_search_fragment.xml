@@ -36,29 +36,22 @@
         app:layout_constraintTop_toBottomOf="@+id/Init_manual_bridgeImage"
         app:layout_constraintVertical_bias="0.0" />
 
-    <android.support.constraint.Barrier
-        android:id="@+id/Init_manual_bridgeInputBarrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="top"
-        app:constraint_referenced_ids="Init_manual_bridgeIpInput"
-        tools:layout_editor_absoluteX="54dp"
-        tools:layout_editor_absoluteY="449dp" />
-
-    <EditText
-        android:id="@+id/Init_manual_bridgeIpInput"
+    <include
+        android:id="@+id/include"
+        layout="@layout/init_input_cardview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="124dp"
-        android:ems="10"
-        android:inputType="number"
-        android:text="Name"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toTopOf="@+id/floatingActionButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/Init_manual_bridgeInputBarrier">
+
+    </include>
 
     <TextView
         android:id="@+id/Init_manual_bridgeInputErrorText"
@@ -66,21 +59,29 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="TextView"
-        app:layout_constraintStart_toStartOf="@+id/Init_manual_bridgeIpInput"
-        app:layout_constraintTop_toBottomOf="@+id/Init_manual_bridgeIpInput" />
+        app:layout_constraintStart_toStartOf="@+id/include"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButton"
-        android:layout_width="109dp"
-        android:layout_height="71dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
         android:clickable="false"
         android:src="@drawable/ic_baseline_search_24px"
         app:elevation="5dp"
+        app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.897"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <android.support.constraint.Barrier
+        android:id="@+id/Init_manual_bridgeInputBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="include"
+        tools:layout_editor_absoluteX="206dp"
+        tools:layout_editor_absoluteY="392dp" />
 
 </android.support.constraint.ConstraintLayout>

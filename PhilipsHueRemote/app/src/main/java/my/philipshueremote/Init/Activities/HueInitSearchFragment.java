@@ -97,8 +97,7 @@ public class HueInitSearchFragment extends Fragment {
                     transitionBundle.putParcelable("BRIDGE", viewModel.getBridges().get(0));
                 }
                 transitionFragment.setArguments(transitionBundle);
-                proceedToNextFragment(transitionFragment, null, fragmentTag);
-                viewModel.setInitialSearch(false);
+                proceedToNextFragment(transitionFragment, fragmentTag);
             }
             else {
                 viewModel.startSearching();
@@ -108,8 +107,13 @@ public class HueInitSearchFragment extends Fragment {
         searchManualButton.setOnClickListener(view -> {
             viewModel.stopSearching();
             viewModel.setInitialSearch(false);
-            proceedToNextFragment(new HueInitBridgeSelectionFragment(), null, "INIT_BRIDGE_MANUAL");
+            proceedToNextFragment(new HueInitManualSearch(), "INIT_BRIDGE_MANUAL");
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -135,10 +139,12 @@ public class HueInitSearchFragment extends Fragment {
         view.setClickable(value);
     }
 
-    private void proceedToNextFragment(Fragment fragment, Transition transition, String tag) {
+    private void proceedToNextFragment(Fragment fragment, String tag) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.Init_Activity_Holder, fragment, tag);
-        transaction.addToBackStack(tag);
-        transaction.commit();
+        transaction.setReorderingAllowed(true)
+                .setCustomAnimations(android.R.anim.slide_out_right, android.R.anim.slide_in_left)
+                .replace(R.id.Init_Activity_Holder, fragment, tag)
+                .addToBackStack(tag)
+                .commit();
     }
 }
