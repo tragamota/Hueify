@@ -109,11 +109,7 @@ public class HueInitSearchFragment extends Fragment {
             viewModel.setInitialSearch(false);
             proceedToNextFragment(new HueInitManualSearch(), "INIT_BRIDGE_MANUAL");
         });
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
     }
 
     @Override
@@ -141,8 +137,10 @@ public class HueInitSearchFragment extends Fragment {
 
     private void proceedToNextFragment(Fragment fragment, String tag) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.setReorderingAllowed(true)
-                .setCustomAnimations(android.R.anim.slide_out_right, android.R.anim.slide_in_left)
+        transaction
+                .setReorderingAllowed(true)
+                .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right,
+                        android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                 .replace(R.id.Init_Activity_Holder, fragment, tag)
                 .addToBackStack(tag)
                 .commit();

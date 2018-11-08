@@ -15,7 +15,6 @@ public class HueInitActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.Init_Activity_Holder, new HueInitSearchFragment(),"INIT_SEARCH")
                     .addToBackStack("INIT_SEARCH")
-                    .setReorderingAllowed(true)
                     .commit();
         }
     }
