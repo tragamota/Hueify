@@ -13,12 +13,12 @@ import my.philipshueremote.Init.Viewmodels.HueInitBridgeSelectionViewModel;
 import my.philipshueremote.R;
 
 public class HueInitBridgeSelectionFragment extends Fragment {
-    private HueInitBridgeSelectionViewModel slaveViewModel;
+    private HueInitBridgeSelectionViewModel viewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        slaveViewModel = ViewModelProviders.of(this).get(HueInitBridgeSelectionViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(HueInitBridgeSelectionViewModel.class);
     }
 
     @Override

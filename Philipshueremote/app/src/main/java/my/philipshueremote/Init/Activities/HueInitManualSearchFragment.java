@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import my.philipshueremote.Init.Viewmodels.HueInitManualSearchViewModel;
 import my.philipshueremote.R;
 
-public class HueInitManualSearch extends Fragment {
+public class HueInitManualSearchFragment extends Fragment {
     private HueInitManualSearchViewModel viewModel;
 
     @Override
