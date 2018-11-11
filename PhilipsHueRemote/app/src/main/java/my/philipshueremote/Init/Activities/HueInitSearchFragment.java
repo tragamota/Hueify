@@ -87,12 +87,14 @@ public class HueInitSearchFragment extends Fragment {
                 if(viewModel.getBridges().size() > 1) {
                     transitionFragment = new HueInitBridgeSelectionFragment();
                     fragmentTag = "INIT_BRIDGE_LIST";
-                    transitionBundle.putParcelableArrayList("BRIDGES", (ArrayList<? extends Parcelable>) viewModel.getBridges());
+                    transitionBundle.putParcelableArrayList("BRIDGES",
+                            (ArrayList<? extends Parcelable>) viewModel.getBridges());
                 }
                 else {
-                    transitionFragment = new HueInitBridgeSelectionFragment();
+                    transitionFragment = new HueInitTokenFragment();
                     fragmentTag = "INIT_TOKEN";
-                    transitionBundle.putParcelable("BRIDGE", viewModel.getBridges().get(0));
+                    transitionBundle.putParcelable("BRIDGE",
+                            viewModel.getBridges().get(0));
                 }
                 transitionFragment.setArguments(transitionBundle);
                 proceedToNextFragment(transitionFragment, fragmentTag);
