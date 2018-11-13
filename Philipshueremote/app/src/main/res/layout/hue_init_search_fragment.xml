@@ -6,6 +6,7 @@
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".Init.Activities.HueInitSearchFragment">
 
     <ScrollView
@@ -80,6 +81,7 @@
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/search_icon"
+        android:visibility="visible"
         app:elevation="5dp"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"

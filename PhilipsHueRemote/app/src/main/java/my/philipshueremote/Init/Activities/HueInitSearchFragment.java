@@ -53,7 +53,7 @@ public class HueInitSearchFragment extends Fragment {
             getActivity().setTitle("Welkom");
         }
         else {
-          getActivity().setTitle("Bridge setup");
+            getActivity().setTitle("Bridge setup");
         }
 
         viewModel.getSearchState().observe(this, searchingStates -> {
@@ -66,16 +66,19 @@ public class HueInitSearchFragment extends Fragment {
                 }
                 changeProgressBarStatus(false);
                 changeClickableButon(searchNavButton, true);
+                searchNavButton.setVisibility(View.VISIBLE);
             }
             else if(searchingStates == SearchingStates.SEARCHING) {
                 statusTextView.setText("Searching for bridges..");
                 changeProgressBarStatus(true);
                 changeClickableButon(searchNavButton, false);
+                searchNavButton.setVisibility(View.INVISIBLE);
             }
             else {
                 statusTextView.setText("No brigde found");
                 changeProgressBarStatus(false);
                 changeClickableButon(searchNavButton, true);
+                searchNavButton.setVisibility(View.VISIBLE);
             }
         });
 
