@@ -125,28 +125,12 @@ public class MultiCastDiscovery implements Discoverable {
         String bridgeUrl = "http://" + ipAdress + ":" + portNumber + "/api/NoUser/config";
 
         JsonObjectRequest request = new JsonObjectRequest(bridgeUrl,null , response -> {
-            String bridgeName, bridgeVersion, bridgeMacAddress, bridgeID;
             try {
-                bridgeName = response.getString("name");
-                bridgeMacAddress = response.getString("mac");
-                if(response.has("apiversion")) {
-                    bridgeVersion = response.getString("apiversion");
-                }
-                else {
-                    bridgeVersion = "Unknown api version";
-                }
-                if(response.has("bridgeid")) {
-                    bridgeID = response.getString("bridgeid");
-                }
-                else {
-                    bridgeID = "Unknown bridge ID";
-                }
-
-                bridges.add(new BridgeInfo(ipAdress, portNumber, bridgeName, bridgeVersion, bridgeMacAddress, bridgeID));
+                bridges.add(BridgeInfo.BridgeInfo(ipAdress, portNumber, response));
             } catch (JSONException e) {
                 e.printStackTrace();
-            }
-            finally {
+                requests.remove(this);
+            } finally {
                 requests.remove(this);
             }
         }, error -> requests.remove(this));

@@ -5,6 +5,7 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".Init.Activities.HueInitBridgeSelectionFragment">
 
     <TextView
@@ -12,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:gravity="center"
         android:text="The are multiple bridges found on your network.\nChoose the bridge you want to use"
@@ -24,20 +25,22 @@
         android:id="@+id/Init_bridge_listview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/barrier2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Init_bridge_SubTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/Init_bridge_SubTitle"
+        app:layout_constraintVertical_bias="1.0" />
 
     <android.support.constraint.Barrier
         android:id="@+id/barrier2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
-        app:constraint_referenced_ids="Init_bridge_tip_textview,floatingActionButton2"
-        tools:layout_editor_absoluteY="98dp" />
+        app:constraint_referenced_ids="Init_bridge_tip_textview,Init_bridge_selection_proceed"
+        tools:layout_editor_absoluteY="567dp" />
 
     <android.support.constraint.Barrier
         android:id="@+id/barrier"
@@ -45,9 +48,8 @@
         android:layout_height="wrap_content"
         app:barrierAllowsGoneWidgets="false"
         app:barrierDirection="start"
-        app:constraint_referenced_ids="floatingActionButton2"
-        tools:layout_editor_absoluteX="70dp"
-        tools:layout_editor_absoluteY="33dp" />
+        app:constraint_referenced_ids="Init_bridge_selection_proceed"
+        tools:layout_editor_absoluteX="411dp" />
 
     <TextView
         android:id="@+id/Init_bridge_tip_textview"
@@ -65,7 +67,7 @@
         app:layout_constraintTop_toTopOf="@+id/barrier2" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton2"
+        android:id="@+id/Init_bridge_selection_proceed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"

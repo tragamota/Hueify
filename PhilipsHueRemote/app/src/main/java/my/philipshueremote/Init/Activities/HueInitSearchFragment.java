@@ -40,7 +40,7 @@ public class HueInitSearchFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.hue_init_search_fragment, container, false);
         searchManualButton = view.findViewById(R.id.Init_Search_ManualButton);
-        statusIndicatorBar = view.findViewById(R.id.Init_waiting_ProgressBar);
+        statusIndicatorBar = view.findViewById(R.id.Init_Input_ProgressBar);
         statusTextView = view.findViewById(R.id.Init_waiting_statusText);
         searchNavButton = view.findViewById(R.id.Init_Search_proceedButton);
         return view;
@@ -65,17 +65,19 @@ public class HueInitSearchFragment extends Fragment {
                     statusTextView.setText("Found a single bridge");
                 }
                 changeProgressBarStatus(false);
-                changeClickableButon(searchNavButton, true);
+                changeClickableButton(searchNavButton, true);
+                searchNavButton.setImageResource(R.drawable.ic_forward_arrow);
             }
             else if(searchingStates == SearchingStates.SEARCHING) {
                 statusTextView.setText("Searching for bridges..");
                 changeProgressBarStatus(true);
-                changeClickableButon(searchNavButton, false);
+                changeClickableButton(searchNavButton, false);
             }
             else {
                 statusTextView.setText("No brigde found");
                 changeProgressBarStatus(false);
-                changeClickableButon(searchNavButton, true);
+                changeClickableButton(searchNavButton, true);
+                searchNavButton.setImageResource(R.drawable.ic_search_glass);
             }
         });
 
@@ -107,9 +109,8 @@ public class HueInitSearchFragment extends Fragment {
         searchManualButton.setOnClickListener(view -> {
             viewModel.stopSearching();
             viewModel.setInitialSearch(false);
-            proceedToNextFragment(new HueInitManualSearchFragment(), "INIT_BRIDGE_MANUAL");
+            proceedToNextFragment(new HueInitBridgeSelectionFragment(), "INIT_BRIDGE_MANUAL");
         });
-
     }
 
     @Override
@@ -122,17 +123,20 @@ public class HueInitSearchFragment extends Fragment {
     }
 
     private void changeProgressBarStatus(boolean active) {
-        if(active) {
-            statusIndicatorBar.setIndeterminate(active);
-        }
-        else {
-            statusIndicatorBar.setIndeterminate(active);
+        statusIndicatorBar.setIndeterminate(active);
+        if(!active) {
             statusIndicatorBar.setProgress(0);
         }
     }
 
-    private void changeClickableButon(View view, boolean value) {
+    private void changeClickableButton(View view, boolean value) {
         view.setClickable(value);
+        if(value) {
+            view.setVisibility(View.VISIBLE);
+        }
+        else {
+            view.setVisibility(View.GONE);
+        }
     }
 
     private void proceedToNextFragment(Fragment fragment, String tag) {

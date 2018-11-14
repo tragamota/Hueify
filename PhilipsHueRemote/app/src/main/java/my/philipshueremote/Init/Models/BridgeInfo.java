@@ -3,6 +3,9 @@ package my.philipshueremote.Init.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class BridgeInfo implements Parcelable {
     private String ipAddress;
     private int portNumber;
@@ -21,6 +24,20 @@ public class BridgeInfo implements Parcelable {
         this.bridgeVersion = bridgeVersion;
         this.bridgeMacAddress = bridgeMacAddress;
         this.bridgeID = bridgeID;
+    }
+
+    public static BridgeInfo BridgeInfo(String ipAddress, int port, JSONObject bridgeObject) throws JSONException {
+        String bridgeName, bridgeVersion, bridgeMacAddress, bridgeID;
+        bridgeName = bridgeObject.getString("name");
+        bridgeMacAddress = bridgeObject.getString("mac");
+        bridgeVersion = bridgeObject.has("apiversion") ?
+                bridgeObject.getString("apiversion") :
+                "Unknown api version";
+        bridgeID = bridgeObject.has("bridgeid") ?
+                bridgeObject.getString("bridgeid") :
+                "Unknown bridge ID";
+
+        return new BridgeInfo(ipAddress, port, bridgeName, bridgeVersion, bridgeMacAddress, bridgeID);
     }
 
     public String getIpAddress() {
