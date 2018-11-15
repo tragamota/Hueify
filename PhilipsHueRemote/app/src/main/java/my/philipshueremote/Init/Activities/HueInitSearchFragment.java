@@ -109,7 +109,7 @@ public class HueInitSearchFragment extends Fragment {
         searchManualButton.setOnClickListener(view -> {
             viewModel.stopSearching();
             viewModel.setInitialSearch(false);
-            proceedToNextFragment(new HueInitBridgeSelectionFragment(), "INIT_BRIDGE_MANUAL");
+            proceedToNextFragment(new HueInitManualSearchFragment(), "INIT_BRIDGE_MANUAL");
         });
     }
 

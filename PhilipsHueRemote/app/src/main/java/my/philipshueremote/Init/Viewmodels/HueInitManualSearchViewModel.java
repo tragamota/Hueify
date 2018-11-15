@@ -48,14 +48,17 @@ public class HueInitManualSearchViewModel extends AndroidViewModel {
             try {
                 foundBridge = BridgeInfo.BridgeInfo(ip, 80, response);
                 bridgeState.postValue(BRIDGE_FOUND);
+                System.out.println("Gevonden!");
             } catch (JSONException e) {
                 e.printStackTrace();
                 bridgeState.postValue(NO_BRIDGE_FOUND);
             }
-        }, error ->
-                bridgeState.postValue(NO_BRIDGE_FOUND)
-        );
+        }, error -> {
+            bridgeState.postValue(NO_BRIDGE_FOUND);
+            System.out.println("niet Gevonden!");
+        });
 
+        jsonSocket.start();
         jsonSocket.addRequestToQueue(onGoingRequest);
         bridgeState.postValue(BRIDGE_SEARCH);
     }
