@@ -7,20 +7,53 @@ import android.arch.lifecycle.MutableLiveData;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import my.philipshueremote.DataCommunication.CustomJsonArrayRequest;
 import my.philipshueremote.DataCommunication.VolleyJsonSocket;
+import my.philipshueremote.Init.Models.BridgeInfo;
 
 public class HueInitTokenViewModel extends AndroidViewModel {
     private VolleyJsonSocket volleySocket;
 
     private MutableLiveData<String> accessToken;
+    private MutableLiveData<Integer> accessWaitingProcess;
     private CountDownTimer buttonPressCounter;
     private JsonRequest onGoingUserRequest;
+
+    private boolean initialRequestDone;
+    private BridgeInfo bridgeInfo;
 
     public HueInitTokenViewModel(@NonNull Application application) {
         super(application);
         volleySocket = VolleyJsonSocket.getInstance(application);
+        initialRequestDone = false;
+    }
+
+    public boolean getInitialRequestDone() {
+        return initialRequestDone;
+    }
+
+    public void setInitialRequestDone(boolean value) {
+        initialRequestDone = value;
+    }
+
+    public void setBridgeInfo(BridgeInfo info) {
+        if(bridgeInfo == null) {
+            bridgeInfo = info;
+        }
     }
 
     public LiveData<String> getAccessToken() {
@@ -29,6 +62,14 @@ public class HueInitTokenViewModel extends AndroidViewModel {
             accessToken.postValue(null);
         }
         return accessToken;
+    }
+
+    public LiveData<Integer> getTimeToGo() {
+        if(accessWaitingProcess == null) {
+            accessWaitingProcess = new MutableLiveData<>();
+            accessWaitingProcess.postValue(0);
+        }
+        return accessWaitingProcess;
     }
 
     public void startAccessToken() {
@@ -43,19 +84,39 @@ public class HueInitTokenViewModel extends AndroidViewModel {
             public void onFinish() {
                 volleySocket.cancel(onGoingUserRequest);
             }
-        };
+        }.start();
     }
 
     public void stopAccessToken() {
-
+        buttonPressCounter.cancel();
+        volleySocket.cancel(onGoingUserRequest);
     }
 
+    private synchronized void retrieveAccessToken() {
+        String instanceID = UUID.randomUUID().toString();
+        String bridgeUrl = "http://" + bridgeInfo.getIpAddress() + "/api";
 
+        Map<String, Object> accessInfoMap = new HashMap<>();
+        accessInfoMap.put("devicetype", ("hueify#"+ instanceID));
 
-    public void retrieveAccessToken() {
-        onGoingUserRequest =
-        volleySocket.addRequestToQueue()
-
-
+        onGoingUserRequest = new CustomJsonArrayRequest(Request.Method.POST, bridgeUrl,
+                new JSONObject(accessInfoMap),
+                response -> {
+                try {
+                    JSONObject accessObject = (JSONObject) response.get(0);
+                    if(accessObject.has("error")) {
+                        retrieveAccessToken();
+                    }
+                    else {
+                        JSONObject successObject = accessObject.getJSONObject("success");
+                        accessToken.postValue(successObject.getString("username"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    retrieveAccessToken();
+                }},
+                error -> retrieveAccessToken()
+        );
+        volleySocket.addRequestToQueue(onGoingUserRequest);
     }
 }

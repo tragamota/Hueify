@@ -32,7 +32,7 @@ public class HueInitTokenFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = ViewModelProviders.of(this).get(HueInitTokenViewModel.class);
-
+        viewModel.setBridgeInfo(savedInstanceState.getParcelable("BRIDGE"));
     }
 
     @Override
@@ -53,8 +53,31 @@ public class HueInitTokenFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        viewModel.getAccessToken().observe(this, s -> {
+            if(s == null) {
+
+            }
+            else {
+
+            }
+        });
+
+        viewModel.
+
+
         manualButton.setOnClickListener(view -> {
+            viewModel.stopAccessToken();
             proceedToNextFragment(new HueInitManualTokenFragment(), "INIT_TOKEN_MANUAL");
+        });
+
+        proceedButton.setOnClickListener(view -> {
+            if(viewModel.getAccessToken().getValue() == null) {
+                viewModel.startAccessToken();
+            }
+            else {
+                getFragmentManager().popBackStack("INIT_SEARCH", 0);
+                proceedToNextFragment(new HueInitDoneFragment(), "INIT_DONE");
+            }
         });
 
         startPostponedEnterTransition();
@@ -64,6 +87,11 @@ public class HueInitTokenFragment extends Fragment {
     public void onStart() {
         super.onStart();
         getActivity().setTitle("Grant access");
+
+        if(!viewModel.getInitialRequestDone()) {
+            viewModel.startAccessToken();
+            viewModel.setInitialRequestDone(true);
+        }
     }
 
     private void proceedToNextFragment(Fragment fragment, String tag) {
