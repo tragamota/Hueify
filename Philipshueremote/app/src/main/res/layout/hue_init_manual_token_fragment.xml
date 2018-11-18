@@ -67,6 +67,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_manual_token"
                 tools:src="@tools:sample/avatars"
                 tools:srcCompat="@drawable/ic_manual_token" />
 

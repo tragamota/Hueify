@@ -40,7 +40,7 @@ public class HueInitSearchFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.hue_init_search_fragment, container, false);
         searchManualButton = view.findViewById(R.id.Init_Search_ManualButton);
-        statusIndicatorBar = view.findViewById(R.id.Init_Input_ProgressBar);
+        statusIndicatorBar = view.findViewById(R.id.Init_waiting_ProgressBar);
         statusTextView = view.findViewById(R.id.Init_waiting_statusText);
         searchNavButton = view.findViewById(R.id.Init_Search_proceedButton);
         return view;
@@ -49,12 +49,6 @@ public class HueInitSearchFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if(getActivity().isTaskRoot()) {
-            getActivity().setTitle("Welkom");
-        }
-        else {
-          getActivity().setTitle("Bridge setup");
-        }
 
         viewModel.getSearchState().observe(this, searchingStates -> {
             if (searchingStates == SearchingStates.FOUND) {
@@ -69,7 +63,7 @@ public class HueInitSearchFragment extends Fragment {
                 searchNavButton.setImageResource(R.drawable.ic_forward_arrow);
             }
             else if(searchingStates == SearchingStates.SEARCHING) {
-                statusTextView.setText("Searching for bridges..");
+                statusTextView.setText("Searching for bridges");
                 changeProgressBarStatus(true);
                 changeClickableButton(searchNavButton, false);
             }
@@ -107,19 +101,22 @@ public class HueInitSearchFragment extends Fragment {
         });
 
         searchManualButton.setOnClickListener(view -> {
+            proceedToNextFragment(new HueInitManualSearchFragment(), "INIT_BRIDGE_MANUAL");
             viewModel.stopSearching();
             viewModel.setInitialSearch(false);
-            proceedToNextFragment(new HueInitManualSearchFragment(), "INIT_BRIDGE_MANUAL");
         });
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
+
         if(!viewModel.getInitialSearch()) {
             viewModel.startSearching();
             viewModel.setInitialSearch(true);
         }
+
+        getActivity().setTitle((getActivity().isTaskRoot()) ? "Welkom" : "Bridge setup");
     }
 
     private void changeProgressBarStatus(boolean active) {
@@ -135,7 +132,7 @@ public class HueInitSearchFragment extends Fragment {
             view.setVisibility(View.VISIBLE);
         }
         else {
-            view.setVisibility(View.GONE);
+            view.setVisibility(View.INVISIBLE);
         }
     }
 

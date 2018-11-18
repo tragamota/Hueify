@@ -17,6 +17,5 @@ public class HueInitManualTokenViewModel extends AndroidViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-
     }
 }

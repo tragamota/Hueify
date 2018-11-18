@@ -53,7 +53,6 @@ public class HueInitSearchViewModel extends AndroidViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        System.out.println("Viewmodel is destroyed");
         stopSearching();
     }
 }

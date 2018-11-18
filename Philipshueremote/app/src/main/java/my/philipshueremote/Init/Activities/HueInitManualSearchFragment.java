@@ -9,6 +9,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,7 @@ public class HueInitManualSearchFragment extends Fragment {
         statusText = view.findViewById(R.id.Init_manual_bridgeInputErrorText);
         editTextLayout = view.findViewById(R.id.Init_Input_edit_layout);
         editText = view.findViewById(R.id.Init_Input_edit_text);
-        searchingBar = view.findViewById(R.id.Init_Input_ProgressBar);
+        searchingBar = view.findViewById(R.id.Init_waiting_ProgressBar);
         proceedButton = view.findViewById(R.id.Init_manual_processButton);
         // Inflate the layout for this fragment
         return view;
@@ -51,8 +52,20 @@ public class HueInitManualSearchFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        editTextLayout.setHint("IP address");
-        //editText.addTextChangedListener();
+        viewModel.getValidIpIdenticator().observe(this, aBoolean -> {
+            if(!aBoolean) {
+                statusText.setText("Not a valid IP address");
+                statusText.setVisibility(View.VISIBLE);
+                statusText.setTextColor(getResources().getColor(R.color.colorDarkFailText));
+                proceedButton.setClickable(false);
+                proceedButton.setVisibility(View.INVISIBLE);
+            }
+            else {
+                statusText.setVisibility(View.INVISIBLE);
+                proceedButton.setClickable(true);
+                proceedButton.setVisibility(View.VISIBLE);
+            }
+        });
 
         viewModel.getBridgeState().observe(this, integer -> {
             if(integer == viewModel.NO_SEARCH) {
@@ -65,6 +78,7 @@ public class HueInitManualSearchFragment extends Fragment {
             }
             else if(integer == viewModel.BRIDGE_SEARCH) {
                 statusText.setVisibility(View.VISIBLE);
+                statusText.setTextColor(getResources().getColor(R.color.colorDarkPrimaryText));
                 statusText.setText("Searching for bridge");
                 searchingBar.setIndeterminate(true);
                 editTextLayout.setEnabled(false);
@@ -74,6 +88,7 @@ public class HueInitManualSearchFragment extends Fragment {
             }
             else if(integer == viewModel.BRIDGE_FOUND) {
                 statusText.setVisibility(View.VISIBLE);
+                statusText.setTextColor(getResources().getColor(R.color.colorDarkPassText));
                 statusText.setText("Found your bridge");
                 searchingBar.setIndeterminate(false);
                 editTextLayout.setEnabled(false);
@@ -83,6 +98,7 @@ public class HueInitManualSearchFragment extends Fragment {
             }
             else {
                 statusText.setVisibility(View.VISIBLE);
+                statusText.setTextColor(getResources().getColor(R.color.colorDarkFailText));
                 statusText.setText("No bridge found");
                 searchingBar.setIndeterminate(false);
                 editTextLayout.setEnabled(true);
@@ -94,30 +110,43 @@ public class HueInitManualSearchFragment extends Fragment {
 
         proceedButton.setOnClickListener(view -> {
             int currentState = viewModel.getBridgeState().getValue();
+            proceedToNextFragment();
             if(currentState == viewModel.NO_SEARCH || currentState == viewModel.NO_BRIDGE_FOUND) {
-                viewModel.startSearching("145.48.205.31");
+                viewModel.startSearching(editText.getText().toString());
             }
             else {
-                //proceed to next fragment.
-                Fragment fragment = new HueInitTokenFragment();
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("BRIDGE", viewModel.getFoundBridge());
-                fragment.setArguments(bundle);
-                proceedToNextFragment(fragment, "INIT_TOKEN");
+                proceedToNextFragment();
+                viewModel.resetBridgeState();
             }
         });
+
+        editTextLayout.setHint("IP address");
+        editText.setInputType(InputType.TYPE_CLASS_PHONE);
+        editText.addTextChangedListener(viewModel.getIPTextWatcher());
 
         startPostponedEnterTransition();
     }
 
-    private void proceedToNextFragment(Fragment fragment, String tag) {
+    @Override
+    public void onStart() {
+        super.onStart();
+        getActivity().setTitle("Manual search");
+    }
+
+    private void proceedToNextFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("BRIDGE", viewModel.getFoundBridge());
+
+        Fragment fragment = new HueInitTokenFragment();
+        fragment.setArguments(bundle);
+
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction
                 .setReorderingAllowed(true)
-                .replace(R.id.Init_Activity_Holder, fragment, tag)
                 .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right,
                         android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-                .addToBackStack(tag)
+                .replace(R.id.Init_Activity_Holder, fragment, "INIT_TOKEN")
+                .addToBackStack("INIT_TOKEN")
                 .commit();
     }
 }

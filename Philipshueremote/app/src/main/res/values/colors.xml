@@ -8,4 +8,6 @@
     <color name="colorDarkAccent">#9575CD</color>
     <color name="colorDarkPrimaryText">#FFFFFF</color>
     <color name="colorDarkHighLight">#95CE93D8</color>
+    <color name="colorDarkFailText">#FFEE0000</color>
+    <color name="colorDarkPassText">#FF00EE00</color>
 </resources>
