@@ -32,7 +32,13 @@ public class HueInitTokenFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = ViewModelProviders.of(this).get(HueInitTokenViewModel.class);
-        viewModel.setBridgeInfo(savedInstanceState.getParcelable("BRIDGE"));
+
+        Bundle bundle;
+        if((bundle = getArguments()) != null) {
+            if(bundle.containsKey("BRIDGE")) {
+                viewModel.setBridgeInfo(bundle.getParcelable("BRIDGE"));
+            }
+        }
     }
 
     @Override
@@ -41,7 +47,7 @@ public class HueInitTokenFragment extends Fragment {
         // Inflate the layout for this fragment
         postponeEnterTransition();
         View view = inflater.inflate(R.layout.hue_init_token_fragment, container, false);
-        statusTextView = view.findViewById(R.id.Init_Search_Status);
+        statusTextView = view.findViewById(R.id.Init_waiting_statusText);
         statusWaitingBar = view.findViewById(R.id.Init_waiting_ProgressBar);
         manualButton = view.findViewById(R.id.Init_access_manual_button);
         proceedButton = view.findViewById(R.id.Init_access_action_button);
@@ -55,15 +61,28 @@ public class HueInitTokenFragment extends Fragment {
 
         viewModel.getAccessToken().observe(this, s -> {
             if(s == null) {
-
+                proceedButton.setImageResource(R.drawable.ic_search_glass);
+                statusTextView.setText("No access key found");
             }
             else {
-
+                proceedButton.setImageResource(R.drawable.ic_forward_arrow);
+                statusTextView.setText("Retrieved an access key");
             }
+            proceedButton.setVisibility(View.VISIBLE);
+            proceedButton.setClickable(true);
         });
 
-        viewModel.
-
+        viewModel.getTimeToGo().observe(this, integer -> {
+            statusWaitingBar.setProgress(integer);
+            if(integer == 0) {
+                proceedButton.setVisibility(View.VISIBLE);
+                proceedButton.setClickable(true);
+            }
+            else {
+                proceedButton.setVisibility(View.INVISIBLE);
+                proceedButton.setClickable(false);
+            }
+        });
 
         manualButton.setOnClickListener(view -> {
             viewModel.stopAccessToken();

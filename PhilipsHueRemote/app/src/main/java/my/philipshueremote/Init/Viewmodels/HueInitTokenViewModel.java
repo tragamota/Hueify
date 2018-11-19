@@ -8,11 +8,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,14 +70,18 @@ public class HueInitTokenViewModel extends AndroidViewModel {
 
     public void startAccessToken() {
         retrieveAccessToken();
-        buttonPressCounter = new CountDownTimer(30000, 1000) {
+        buttonPressCounter = new CountDownTimer(30000, 500) {
             @Override
             public void onTick(long l) {
-
+                System.out.println(l);
+                int percentage = (int) ((l/30000.0f)*100.0f);
+                System.out.println(percentage);
+                accessWaitingProcess.postValue(percentage);
             }
 
             @Override
             public void onFinish() {
+                accessWaitingProcess.postValue(0);
                 volleySocket.cancel(onGoingUserRequest);
             }
         }.start();
@@ -117,6 +117,7 @@ public class HueInitTokenViewModel extends AndroidViewModel {
                 }},
                 error -> retrieveAccessToken()
         );
+        System.out.println("doing access request");
         volleySocket.addRequestToQueue(onGoingUserRequest);
     }
 }
