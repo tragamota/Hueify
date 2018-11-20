@@ -17,6 +17,9 @@ public interface BridgeDAO {
     @Query("SELECT * FROM BridgeInfo WHERE bridgeID LIKE :bridgeID")
     BridgeInfo getBridgeBasedOnID(String bridgeID);
 
+    @Query("SELECT COUNT(*) FROM BridgeInfo")
+    int sizeOfBridges();
+
     @Insert
     void insertBridgeInformation(BridgeInfo bridge);
 

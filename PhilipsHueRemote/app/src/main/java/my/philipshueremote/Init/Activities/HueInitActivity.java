@@ -9,7 +9,7 @@ public class HueInitActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hue_init);
+        setContentView(R.layout.hue_init_activity);
 
         if(getSupportFragmentManager().getFragments().isEmpty()) {
             getSupportFragmentManager().beginTransaction()

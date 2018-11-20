@@ -12,6 +12,9 @@ public abstract class HueDatabase extends RoomDatabase {
     private static HueDatabase Instance;
 
     public abstract BridgeDAO bridgeDAO();
+    public abstract LampDAO lampDAO();
+    public abstract GroupDAO groupDAO();
+    public abstract SceneDAO sceneDAO();
 
     public static synchronized HueDatabase getInstance(Context appContext) {
         if(Instance == null) {

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/main_menu_lamps_item"
+        android:enabled="true"
+        android:title="@string/main_menu_lamps"
+        android:icon="@drawable/menu_lamp_icon"/>
+    <item
+        android:id="@+id/main_menu_groups_item"
+        android:enabled="true"
+        android:title="@string/main_menu_groups"
+        android:icon="@drawable/menu_group_icon" />
+    <item
+        android:id="@+id/main_menu_scenes_item"
+        android:enabled="true"
+        android:title="@string/main_menu_scenes"
+        android:icon="@drawable/menu_scenes_icon" />
+</menu>

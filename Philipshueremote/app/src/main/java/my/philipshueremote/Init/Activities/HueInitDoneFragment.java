@@ -10,7 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import my.philipshueremote.MainActivity;
+import my.philipshueremote.MainUI.MainAppActivity;
+import my.philipshueremote.SplashActivity;
 import my.philipshueremote.R;
 
 /**
@@ -53,7 +54,7 @@ public class HueInitDoneFragment extends Fragment {
     }
 
     private void startMainActivity() {
-        Intent intent = new Intent(getActivity(), MainActivity.class);
+        Intent intent = new Intent(getActivity(), MainAppActivity.class);
         startActivity(intent);
     }
 }

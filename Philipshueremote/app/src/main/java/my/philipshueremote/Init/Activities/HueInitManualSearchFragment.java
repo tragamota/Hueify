@@ -45,7 +45,7 @@ public class HueInitManualSearchFragment extends Fragment {
         editText = view.findViewById(R.id.Init_Input_edit_text);
         searchingBar = view.findViewById(R.id.Init_waiting_ProgressBar);
         proceedButton = view.findViewById(R.id.Init_manual_processButton);
-        // Inflate the layout for this fragment
+
         return view;
     }
 
@@ -58,12 +58,12 @@ public class HueInitManualSearchFragment extends Fragment {
                 statusText.setVisibility(View.VISIBLE);
                 statusText.setTextColor(getResources().getColor(R.color.colorDarkFailText));
                 proceedButton.setClickable(false);
-                proceedButton.setVisibility(View.INVISIBLE);
+                proceedButton.hide();
             }
             else {
                 statusText.setVisibility(View.INVISIBLE);
                 proceedButton.setClickable(true);
-                proceedButton.setVisibility(View.VISIBLE);
+                proceedButton.show();
             }
         });
 
@@ -71,7 +71,7 @@ public class HueInitManualSearchFragment extends Fragment {
             if(integer == viewModel.NO_SEARCH) {
                 statusText.setVisibility(View.INVISIBLE);
                 searchingBar.setIndeterminate(false);
-                proceedButton.setVisibility(View.VISIBLE);
+                proceedButton.show();
                 editTextLayout.setEnabled(true);
                 proceedButton.setClickable(true);
                 proceedButton.setImageResource(R.drawable.ic_search_glass);
@@ -82,7 +82,7 @@ public class HueInitManualSearchFragment extends Fragment {
                 statusText.setText("Searching for bridge");
                 searchingBar.setIndeterminate(true);
                 editTextLayout.setEnabled(false);
-                proceedButton.setVisibility(View.INVISIBLE);
+                proceedButton.hide();
                 proceedButton.setClickable(false);
                 proceedButton.setImageResource(R.drawable.ic_search_glass);
             }
@@ -92,7 +92,7 @@ public class HueInitManualSearchFragment extends Fragment {
                 statusText.setText("Found your bridge");
                 searchingBar.setIndeterminate(false);
                 editTextLayout.setEnabled(false);
-                proceedButton.setVisibility(View.VISIBLE);
+                proceedButton.show();
                 proceedButton.setClickable(true);
                 proceedButton.setImageResource(R.drawable.ic_forward_arrow);
             }
@@ -102,7 +102,7 @@ public class HueInitManualSearchFragment extends Fragment {
                 statusText.setText("No bridge found");
                 searchingBar.setIndeterminate(false);
                 editTextLayout.setEnabled(true);
-                proceedButton.setVisibility(View.VISIBLE);
+                proceedButton.show();
                 proceedButton.setClickable(true);
                 proceedButton.setImageResource(R.drawable.ic_search_glass);
             }

@@ -43,4 +43,8 @@ public class VolleyJsonSocket {
     public <T> void cancel(JsonRequest<T> requestToCancel) {
         requestToCancel.cancel();
     }
+
+    public void cancelAllRequest(Context appContext) {
+        requestQueue.cancelAll(appContext);
+    }
 }
