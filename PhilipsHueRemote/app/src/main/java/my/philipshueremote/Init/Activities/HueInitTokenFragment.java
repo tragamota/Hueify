@@ -74,6 +74,7 @@ public class HueInitTokenFragment extends Fragment {
 
         viewModel.getTimeToGo().observe(this, integer -> {
             statusWaitingBar.setProgress(integer);
+            statusTextView.setText("Waiting for access key");
             if(integer == 0) {
                 proceedButton.setVisibility(View.VISIBLE);
                 proceedButton.setClickable(true);

@@ -110,6 +110,7 @@ public class HueInitManualSearchFragment extends Fragment {
 
         proceedButton.setOnClickListener(view -> {
             int currentState = viewModel.getBridgeState().getValue();
+            proceedToNextFragment();
             if(currentState == viewModel.NO_SEARCH || currentState == viewModel.NO_BRIDGE_FOUND) {
                 viewModel.startSearching(editText.getText().toString());
             }

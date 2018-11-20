@@ -1,23 +1,32 @@
 package my.philipshueremote.Init.Models;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Entity
 public class BridgeInfo implements Parcelable {
     private String ipAddress;
     private int portNumber;
 
+    private String bridgeAccessKey;
+
     private String bridgeName;
     private String bridgeVersion;
     private String bridgeMacAddress;
+
+    @PrimaryKey @NonNull
     private String bridgeID;
+
 
     public BridgeInfo(String ipAddress, int portNumber,
                       String bridgeName, String bridgeVersion,
-                      String bridgeMacAddress, String bridgeID) {
+                      String bridgeMacAddress, @NonNull String bridgeID) {
         this.ipAddress = ipAddress;
         this.portNumber = portNumber;
         this.bridgeName = bridgeName;
@@ -64,6 +73,14 @@ public class BridgeInfo implements Parcelable {
         return bridgeID;
     }
 
+    public String getBridgeAccessKey() {
+        return bridgeAccessKey;
+    }
+
+    public void setBridgeAccessKey(String accessKey) {
+        bridgeAccessKey = accessKey;
+    }
+
     private BridgeInfo(Parcel in) {
         ipAddress = in.readString();
         portNumber = in.readInt();
@@ -71,6 +88,7 @@ public class BridgeInfo implements Parcelable {
         bridgeVersion = in.readString();
         bridgeMacAddress = in.readString();
         bridgeID = in.readString();
+        bridgeAccessKey = in.readString();
     }
 
     public static final Creator<BridgeInfo> CREATOR = new Creator<BridgeInfo>() {
@@ -98,5 +116,6 @@ public class BridgeInfo implements Parcelable {
         parcel.writeString(bridgeVersion);
         parcel.writeString(bridgeMacAddress);
         parcel.writeString(bridgeID);
+        parcel.writeString(bridgeAccessKey);
     }
 }

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.persistence.room.Room;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 import my.philipshueremote.DataCommunication.CustomJsonArrayRequest;
 import my.philipshueremote.DataCommunication.VolleyJsonSocket;
+import my.philipshueremote.Database.HueDatabase;
 import my.philipshueremote.Init.Models.BridgeInfo;
 
 public class HueInitTokenViewModel extends AndroidViewModel {
@@ -70,12 +72,10 @@ public class HueInitTokenViewModel extends AndroidViewModel {
 
     public void startAccessToken() {
         retrieveAccessToken();
-        buttonPressCounter = new CountDownTimer(30000, 500) {
+        buttonPressCounter = new CountDownTimer(30000, 750) {
             @Override
             public void onTick(long l) {
-                System.out.println(l);
                 int percentage = (int) ((l/30000.0f)*100.0f);
-                System.out.println(percentage);
                 accessWaitingProcess.postValue(percentage);
             }
 
@@ -88,12 +88,16 @@ public class HueInitTokenViewModel extends AndroidViewModel {
     }
 
     public void stopAccessToken() {
-        buttonPressCounter.cancel();
-        volleySocket.cancel(onGoingUserRequest);
+        if(buttonPressCounter != null) {
+            buttonPressCounter.cancel();
+        }
+        if(onGoingUserRequest != null) {
+            volleySocket.cancel(onGoingUserRequest);
+        }
     }
 
     private synchronized void retrieveAccessToken() {
-        String instanceID = UUID.randomUUID().toString();
+        String instanceID = UUID.randomUUID().toString().substring(0,20);
         String bridgeUrl = "http://" + bridgeInfo.getIpAddress() + "/api";
 
         Map<String, Object> accessInfoMap = new HashMap<>();
@@ -109,7 +113,10 @@ public class HueInitTokenViewModel extends AndroidViewModel {
                     }
                     else {
                         JSONObject successObject = accessObject.getJSONObject("success");
-                        accessToken.postValue(successObject.getString("username"));
+                        String accessKey = successObject.getString("username");
+                        bridgeInfo.setBridgeAccessKey(accessKey);
+                        saveBridgeInfoInDB(bridgeInfo);
+                        accessToken.postValue(accessKey);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -117,7 +124,19 @@ public class HueInitTokenViewModel extends AndroidViewModel {
                 }},
                 error -> retrieveAccessToken()
         );
-        System.out.println("doing access request");
         volleySocket.addRequestToQueue(onGoingUserRequest);
+    }
+
+    private void saveBridgeInfoInDB(BridgeInfo bridge) {
+        if(bridge.getBridgeAccessKey() != null) {
+            HueDatabase database = HueDatabase.getInstance(getApplication());
+            database.bridgeDAO().insertBridgeInformation(bridgeInfo);
+
+            database.closeDatabase();
+            database = HueDatabase.getInstance(getApplication());
+            for(BridgeInfo info :  database.bridgeDAO().getAllBridgeInformation()) {
+                System.out.println(info.getBridgeID() + "\t" + info.getBridgeAccessKey());
+            }
+        }
     }
 }
