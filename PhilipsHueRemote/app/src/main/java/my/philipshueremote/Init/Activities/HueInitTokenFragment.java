@@ -68,7 +68,7 @@ public class HueInitTokenFragment extends Fragment {
                 proceedButton.setImageResource(R.drawable.ic_forward_arrow);
                 statusTextView.setText("Retrieved an access key");
             }
-            proceedButton.setVisibility(View.VISIBLE);
+            proceedButton.show();
             proceedButton.setClickable(true);
         });
 
@@ -76,11 +76,11 @@ public class HueInitTokenFragment extends Fragment {
             statusWaitingBar.setProgress(integer);
             statusTextView.setText("Waiting for access key");
             if(integer == 0) {
-                proceedButton.setVisibility(View.VISIBLE);
+                proceedButton.show();
                 proceedButton.setClickable(true);
             }
             else {
-                proceedButton.setVisibility(View.INVISIBLE);
+                proceedButton.hide();
                 proceedButton.setClickable(false);
             }
         });

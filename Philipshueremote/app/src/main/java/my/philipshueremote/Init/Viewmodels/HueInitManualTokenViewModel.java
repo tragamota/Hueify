@@ -32,6 +32,7 @@ public class HueInitManualTokenViewModel extends AndroidViewModel {
 
     public HueInitManualTokenViewModel(@NonNull Application application) {
         super(application);
+        volleySocket = VolleyJsonSocket.getInstance(application);
     }
 
     public LiveData<Integer> getCurrentState() {
@@ -68,7 +69,7 @@ public class HueInitManualTokenViewModel extends AndroidViewModel {
         volleySocket.addRequestToQueue(accessKeyExistRequest);
     }
 
-    public synchronized void stopExistingAccessRequest() {
+    private synchronized void stopExistingAccessRequest() {
         if(accessKeyExistRequest != null) {
             volleySocket.cancel(accessKeyExistRequest);
             accessKeyExistRequest = null;

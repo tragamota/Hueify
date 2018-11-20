@@ -41,6 +41,7 @@ public class HueInitManualTokenFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        postponeEnterTransition();
         View view = inflater.inflate(R.layout.hue_init_manual_token_fragment, container, false);
 
         textInputLayout = view.findViewById(R.id.Init_Input_edit_layout);
@@ -62,7 +63,7 @@ public class HueInitManualTokenFragment extends Fragment {
                 waitingProgressBar.setIndeterminate(false);
                 textInputLayout.setEnabled(true);
 
-                proceedButton.setVisibility(View.VISIBLE);
+                proceedButton.show();
                 proceedButton.setClickable(true);
             }
             else if(integer == viewModel.SEARCHING) {
@@ -70,7 +71,7 @@ public class HueInitManualTokenFragment extends Fragment {
                 waitingProgressBar.setIndeterminate(true);
                 textInputLayout.setEnabled(false);
 
-                proceedButton.setVisibility(View.INVISIBLE);
+                proceedButton.hide();
                 proceedButton.setClickable(false);
             }
             else if(integer == viewModel.KEY_NOT_EXIST) {
@@ -81,7 +82,7 @@ public class HueInitManualTokenFragment extends Fragment {
                 textInputLayout.setEnabled(true);
                 waitingProgressBar.setIndeterminate(false);
 
-                proceedButton.setVisibility(View.VISIBLE);
+                proceedButton.show();
                 proceedButton.setClickable(true);
             }
             else if(integer == viewModel.KEY_EXIST) {
@@ -93,7 +94,7 @@ public class HueInitManualTokenFragment extends Fragment {
                 waitingProgressBar.setIndeterminate(false);
 
                 proceedButton.setImageResource(R.drawable.ic_forward_arrow);
-                proceedButton.setVisibility(View.VISIBLE);
+                proceedButton.show();
                 proceedButton.setClickable(true);
             }
         });
@@ -110,11 +111,18 @@ public class HueInitManualTokenFragment extends Fragment {
                 }
             }
             else if(currentState == viewModel.KEY_EXIST) {
-
+                proceedToNextFragment(new HueInitDoneFragment());
             }
         });
 
         textInputLayout.setHint("Access Token");
+        startPostponedEnterTransition();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getActivity().setTitle("Manual access");
     }
 
     private void proceedToNextFragment(Fragment fragment) {
