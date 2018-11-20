@@ -3,4 +3,9 @@
     <string name="menu_lamps">Lamps</string>
     <string name="menu_groups">Groups</string>
     <string name="menu_scenes">Scenes</string>
+    <string name="title_activity_hue_init">HueInitActivity</string>
+    <string name="title_activity_hue_init_holder">HueInitHolderActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

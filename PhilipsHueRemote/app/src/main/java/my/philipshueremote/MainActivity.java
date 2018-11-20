@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -14,6 +15,8 @@ import android.view.MenuItem;
 import my.philipshueremote.Fragments.GroupsFragment;
 import my.philipshueremote.Fragments.LampFragment;
 import my.philipshueremote.Fragments.ScenesFragment;
+
+import my.philipshueremote.Init.Activities.HueInitActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -84,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        //start timer for 5 sec after
+        Intent intent = new Intent(this, HueInitActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
