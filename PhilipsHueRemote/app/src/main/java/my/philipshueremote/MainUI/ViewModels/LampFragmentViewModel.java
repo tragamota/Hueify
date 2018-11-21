@@ -16,7 +16,7 @@ public class LampFragmentViewModel extends AndroidViewModel {
     private HueDatabase database;
     private List<Lamp> lamps;
 
-    private LiveData<String> bridgeID
+    private LiveData<String> bridgeID;
     private MediatorLiveData<List<Lamp>> lampChanges;
 
     public LampFragmentViewModel(@NonNull Application application) {
@@ -29,8 +29,8 @@ public class LampFragmentViewModel extends AndroidViewModel {
     public LiveData<List<Lamp>> getLampStateChanger() {
         if(lamps == null) {
             lampChanges = new MediatorLiveData<>();
-            lampChanges.addSource(database.lampDAO().);
+            //lampChanges.addSource(database.lampDAO().);
         }
-        return listOfLamps;
+        return lampChanges;
     }
 }

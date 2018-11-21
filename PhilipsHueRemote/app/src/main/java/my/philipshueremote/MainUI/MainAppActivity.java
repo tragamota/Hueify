@@ -7,7 +7,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,7 @@ public class MainAppActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private BottomNavigationView bottomNavigation;
     private FloatingActionButton fragmentActionButton;
+    private MenuItem settingMenuItem;
 
     private List<View.OnClickListener> actionButtonClickActions;
 
@@ -128,6 +132,25 @@ public class MainAppActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         viewModel.stopHueBackgroundService();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        settingMenuItem = menu.findItem(R.id.main_menu_settings);
+        getMenuInflater().inflate(R.menu.main_app_toolbar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.main_menu_settings:
+                //do something on settings press
+                Toast.makeText(this, "Pressed settings button", Toast.LENGTH_SHORT).show();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

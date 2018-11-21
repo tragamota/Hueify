@@ -121,12 +121,12 @@ public class MultiCastDiscovery implements Discoverable {
         };
     }
 
-    private void getBridgeInfo(String ipAdress, int portNumber) {
-        String bridgeUrl = "http://" + ipAdress + ":" + portNumber + "/api/NoUser/config";
+    private void getBridgeInfo(String ipAddress, int portNumber) {
+        String bridgeUrl = "http://" + ipAddress + ":" + portNumber + "/api/NoUser/config";
 
         JsonObjectRequest request = new JsonObjectRequest(bridgeUrl,null , response -> {
             try {
-                bridges.add(BridgeInfo.BridgeInfo(ipAdress, portNumber, response));
+                bridges.add(BridgeInfo.BridgeInfo(ipAddress, portNumber, response));
             } catch (JSONException e) {
                 e.printStackTrace();
                 requests.remove(this);
