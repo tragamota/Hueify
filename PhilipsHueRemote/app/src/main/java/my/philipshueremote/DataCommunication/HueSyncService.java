@@ -16,19 +16,20 @@ import my.philipshueremote.Database.HueDatabase;
 import my.philipshueremote.Init.Models.BridgeInfo;
 
 public class HueSyncService {
+    private static volatile HueSyncService Instance;
+
     private VolleyJsonSocket socket;
     private HueDatabase appDatabase;
     private Timer freqTimer;
 
     private BridgeInfo selectedBridge;
     private Response.Listener<JSONObject> onLampSuccess, onGroupSuccess, onSceneSuccess;
-    private Response.ErrorListener onError;
 
-    public HueSyncService(Context appContext) {
+    private HueSyncService(Context appContext) {
         socket = VolleyJsonSocket.getInstance(appContext);
         appDatabase = HueDatabase.getInstance(appContext);
-        selectedBridge = new BridgeInfo("192.168.0.33", 80, "bla", "1.2.8", "asdasd", "asdasdad");
-        selectedBridge.setBridgeAccessKey("newdeveloper");
+        selectedBridge = new BridgeInfo("145.48.205.33", 80, "bla", "1.2.8", "asdasd", "asdasdad");
+        selectedBridge.setBridgeAccessKey("iYrmsQq1wu5FxF9CPqpJCnm1GpPVylKBWDUsNDhB");
 
         onLampSuccess = response -> {
             System.out.println(response.toString());
@@ -68,11 +69,13 @@ public class HueSyncService {
                 }
             }
         };
+    }
 
-        onError = error -> {
-            stopService();
-            Toast.makeText(appContext, "Bridge is niet bereikbaar", Toast.LENGTH_SHORT).show();
-        };
+    public synchronized static HueSyncService getInstance(Context appContext) {
+        if(Instance == null) {
+            Instance = new HueSyncService(appContext);
+        }
+        return Instance;
     }
 
     public void setSelectedBridge(BridgeInfo bridge) {
@@ -92,7 +95,7 @@ public class HueSyncService {
             freqTimer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    socket.addRequestToQueue(PremadeHueRequest.lampGetRequest(selectedBridge, onLampSuccess, onError));
+                    socket.addRequestToQueue(PremadeHueRequest.lampGetRequest(selectedBridge, onLampSuccess, null));
                     socket.addRequestToQueue(PremadeHueRequest.groupGetRequest(selectedBridge, onGroupSuccess, null));
                     socket.addRequestToQueue(PremadeHueRequest.sceneGetRequest(selectedBridge, onSceneSuccess, null));
                 }

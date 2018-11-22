@@ -114,24 +114,12 @@ public class MainAppActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        viewModel.stopHueBackgroundService();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         if(viewPager.getCurrentItem() == 0 ) {
             fragmentActionButton.setImageResource(R.drawable.ic_sync_check);
             fragmentActionButton.setOnClickListener(actionButtonClickActions.get(0));
         }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        viewModel.stopHueBackgroundService();
     }
 
     @Override

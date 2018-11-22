@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import my.philipshueremote.MainUI.MainAppActivity;
-import my.philipshueremote.SplashActivity;
 import my.philipshueremote.R;
 
 /**

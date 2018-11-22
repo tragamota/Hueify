@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import my.philipshueremote.Init.Activities.HueInitActivity;
 import my.philipshueremote.MainUI.MainAppActivity;
+import my.philipshueremote.R;
 
 public class SplashActivity extends AppCompatActivity {
 
