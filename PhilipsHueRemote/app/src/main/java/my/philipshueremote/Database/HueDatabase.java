@@ -7,7 +7,7 @@ import android.content.Context;
 
 import my.philipshueremote.Init.Models.BridgeInfo;
 
-@Database(entities = {BridgeInfo.class}, version = 1)
+@Database(entities = {BridgeInfo.class, Lamp.class}, version = 1)
 public abstract class HueDatabase extends RoomDatabase {
     private static HueDatabase Instance;
 

@@ -16,6 +16,8 @@ import my.philipshueremote.Init.Models.BridgeInfo;
 import my.philipshueremote.Init.Models.SearchingStates;
 
 public class MainAppViewModel extends AndroidViewModel {
+    public final int FIRST_VIEWPAGER_FRAGMENT = 0;
+
     private HueSyncService hueService;
     private MultiCastDiscovery hueDiscoverer;
 

@@ -137,14 +137,13 @@ public class MainAppActivity extends AppCompatActivity {
                 Toast.makeText(this, "Pressed settings button", Toast.LENGTH_SHORT).show();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-        if(viewPager.getCurrentItem() != 0) {
-            viewPager.setCurrentItem(0);
+        if(viewPager.getCurrentItem() != viewModel.FIRST_VIEWPAGER_FRAGMENT) {
+            viewPager.setCurrentItem(viewModel.FIRST_VIEWPAGER_FRAGMENT);
             bottomNavigation.setSelectedItemId(R.id.main_menu_lamps_item);
         }
         else {

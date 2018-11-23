@@ -1,5 +1,6 @@
 package my.philipshueremote.Database;
 
+import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.support.annotation.NonNull;
 
@@ -13,6 +14,7 @@ public class Lamp {
     private short lampApiID;
 
     private String lampType, lampName, lampManufacturer, lampProduct;
+    @Embedded
     private LightState state;
 
     public Lamp(@NonNull String bridgeID, short lampApiID) {
@@ -48,40 +50,35 @@ public class Lamp {
         return state;
     }
 
-    public Lamp setLampType(String lampType) {
+    public void setLampType(String lampType) {
         this.lampType = lampType;
-        return this;
     }
 
-    public Lamp setLampName(String lampName) {
+    public void setLampName(String lampName) {
         this.lampName = lampName;
-        return this;
     }
 
-    public Lamp setLampManufacturer(String lampManufacturer) {
+    public void setLampManufacturer(String lampManufacturer) {
         this.lampManufacturer = lampManufacturer;
-        return this;
     }
 
-    public Lamp setLampProduct(String lampProduct) {
+    public void setLampProduct(String lampProduct) {
         this.lampProduct = lampProduct;
-        return this;
     }
 
-    public Lamp setState(LightState state) {
+    public void setState(LightState state) {
         this.state = state;
-        return this;
     }
 
     public static Lamp parseFromJson(String bridgeID, short lampApiID, JSONObject lampObject) throws JSONException {
-        Lamp returnLamp = new Lamp(bridgeID, lampApiID)
-                .setLampName(lampObject.getString("name"))
-                .setLampType(lampObject.getString("type"))
-                .setLampProduct(lampObject.getString("productname"))
-                .setLampManufacturer(lampObject.getString("manufacturername"));
+        Lamp returnLamp = new Lamp(bridgeID, lampApiID);
+        returnLamp.setLampName(lampObject.getString("name"));
+        returnLamp.setLampType(lampObject.getString("type"));
+        returnLamp.setLampProduct(lampObject.getString("productname"));
+        returnLamp.setLampManufacturer(lampObject.getString("manufacturername"));
 
         //todo: Need to update state object from lamp
-        returnLamp.getState();
+        //returnLamp.setState();
 
         return returnLamp;
     }
