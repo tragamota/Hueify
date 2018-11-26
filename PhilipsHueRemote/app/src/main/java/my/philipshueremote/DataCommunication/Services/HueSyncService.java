@@ -30,8 +30,8 @@ public class HueSyncService {
     private HueSyncService(Context appContext) {
         socket = VolleyJsonSocket.getInstance(appContext);
         appDatabase = HueDatabase.getInstance(appContext);
-        selectedBridge = new BridgeInfo("192.168.0.33", 80, "bla", "1.2.8", "asdasd", "asdasdad");
-        selectedBridge.setBridgeAccessKey("newdeveloper");
+        selectedBridge = new BridgeInfo("145.48.205.33", 80, "bla", "1.2.8", "asdasd", "asdasdad");
+        selectedBridge.setBridgeAccessKey("iYrmsQq1wu5FxF9CPqpJCnm1GpPVylKBWDUsNDhB");
 
         onLampSuccess = response -> {
             System.out.println(response.toString());
@@ -43,16 +43,12 @@ public class HueSyncService {
                             Short.decode(lampKey),
                             response.getJSONObject(lampKey));
 
-                    int containsInDatabase = appDatabase.lampDAO().containsLamp(lampEntity.getBridgeID(), lampEntity.getLampApiID());
-
-                    System.out.println("Is it already in the database?\t " + containsInDatabase);
                     if(appDatabase.lampDAO().containsLamp(lampEntity.getBridgeID(), lampEntity.getLampApiID()) > 0) {
                         appDatabase.lampDAO().updateLamp(lampEntity);
                     }
                     else {
                         appDatabase.lampDAO().insertLamp(lampEntity);
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
