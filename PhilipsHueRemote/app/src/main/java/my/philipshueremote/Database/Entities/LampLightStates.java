@@ -1,0 +1,6 @@
+package my.philipshueremote.Database.Entities;
+
+public enum LampLightStates {
+    LAMP_ON_OFF_LIGHT_STATE, LAMP_DIMMABLE_LIGHT_STATE, LAMP_COLOR_TEMPERATURE_LIGHT_STATE,
+    LAMP_COLOR_LIGHT_STATE, LAMP_EXTENDED_COLOR_LIGHT_STATE
+}

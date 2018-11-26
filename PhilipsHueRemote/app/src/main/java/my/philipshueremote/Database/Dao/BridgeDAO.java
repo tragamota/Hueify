@@ -1,4 +1,4 @@
-package my.philipshueremote.Database;
+package my.philipshueremote.Database.Dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;

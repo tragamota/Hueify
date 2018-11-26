@@ -12,6 +12,7 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme_Dark);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 

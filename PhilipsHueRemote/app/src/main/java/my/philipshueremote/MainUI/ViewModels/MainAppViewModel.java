@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import my.philipshueremote.DataCommunication.HueSyncService;
+import my.philipshueremote.DataCommunication.Services.HueSyncService;
 import my.philipshueremote.Database.HueDatabase;
 import my.philipshueremote.Discovery.MultiCastDiscovery;
 import my.philipshueremote.Init.Models.BridgeInfo;

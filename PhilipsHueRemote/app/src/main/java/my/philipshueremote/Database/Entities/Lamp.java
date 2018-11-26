@@ -1,4 +1,4 @@
-package my.philipshueremote.Database;
+package my.philipshueremote.Database.Entities;
 
 import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
@@ -74,11 +74,15 @@ public class Lamp {
         Lamp returnLamp = new Lamp(bridgeID, lampApiID);
         returnLamp.setLampName(lampObject.getString("name"));
         returnLamp.setLampType(lampObject.getString("type"));
-        returnLamp.setLampProduct(lampObject.getString("productname"));
-        returnLamp.setLampManufacturer(lampObject.getString("manufacturername"));
+        if(lampObject.has("productname")) {
+            returnLamp.setLampProduct(lampObject.getString("productname"));
+        }
+        if(lampObject.has("manufacturername")) {
+            returnLamp.setLampManufacturer(lampObject.getString("manufacturername"));
+        }
 
         //todo: Need to update state object from lamp
-        //returnLamp.setState();
+        returnLamp.setState(LightState.parseFromJson(returnLamp.getLampType(), lampObject.getJSONObject("state")));
 
         return returnLamp;
     }

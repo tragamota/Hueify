@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import my.philipshueremote.Database.HueDatabase;
-import my.philipshueremote.Database.Lamp;
+import my.philipshueremote.Database.Entities.Lamp;
 
 public class LampFragmentViewModel extends AndroidViewModel {
     private HueDatabase database;

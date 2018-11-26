@@ -1,4 +1,4 @@
-package my.philipshueremote.DataCommunication;
+package my.philipshueremote.DataCommunication.Requests;
 
 import com.android.volley.Request;
 import com.android.volley.Response;

@@ -1,7 +1,6 @@
-package my.philipshueremote.DataCommunication;
+package my.philipshueremote.DataCommunication.Services;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 
@@ -12,6 +11,9 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import my.philipshueremote.DataCommunication.Requests.PremadeHueRequest;
+import my.philipshueremote.DataCommunication.VolleyJsonSocket;
+import my.philipshueremote.Database.Entities.Lamp;
 import my.philipshueremote.Database.HueDatabase;
 import my.philipshueremote.Init.Models.BridgeInfo;
 
@@ -28,17 +30,30 @@ public class HueSyncService {
     private HueSyncService(Context appContext) {
         socket = VolleyJsonSocket.getInstance(appContext);
         appDatabase = HueDatabase.getInstance(appContext);
-        selectedBridge = new BridgeInfo("145.48.205.33", 80, "bla", "1.2.8", "asdasd", "asdasdad");
-        selectedBridge.setBridgeAccessKey("iYrmsQq1wu5FxF9CPqpJCnm1GpPVylKBWDUsNDhB");
+        selectedBridge = new BridgeInfo("192.168.0.33", 80, "bla", "1.2.8", "asdasd", "asdasdad");
+        selectedBridge.setBridgeAccessKey("newdeveloper");
 
         onLampSuccess = response -> {
             System.out.println(response.toString());
             Iterator<String> lampKeys = response.keys();
             while(lampKeys.hasNext()) {
                 try {
-                    //parse that with a static method!
-                    response.get(lampKeys.next());
-                } catch (JSONException e) {
+                    String lampKey = lampKeys.next();
+                    Lamp lampEntity = Lamp.parseFromJson(selectedBridge.getBridgeID(),
+                            Short.decode(lampKey),
+                            response.getJSONObject(lampKey));
+
+                    int containsInDatabase = appDatabase.lampDAO().containsLamp(lampEntity.getBridgeID(), lampEntity.getLampApiID());
+
+                    System.out.println("Is it already in the database?\t " + containsInDatabase);
+                    if(appDatabase.lampDAO().containsLamp(lampEntity.getBridgeID(), lampEntity.getLampApiID()) > 0) {
+                        appDatabase.lampDAO().updateLamp(lampEntity);
+                    }
+                    else {
+                        appDatabase.lampDAO().insertLamp(lampEntity);
+                    }
+
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -62,7 +77,7 @@ public class HueSyncService {
             Iterator<String> sceneKeys = response.keys();
             while(sceneKeys.hasNext()) {
                 try {
-                    //parse that with a static method!
+
                     response.get(sceneKeys.next());
                 } catch (JSONException e) {
                     e.printStackTrace();

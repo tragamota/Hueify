@@ -6,7 +6,7 @@ import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.Context;
 import android.widget.Toast;
 
-import my.philipshueremote.DataCommunication.HueSyncService;
+import my.philipshueremote.DataCommunication.Services.HueSyncService;
 
 public class AppLifeCycleListener implements LifecycleObserver {
     private HueSyncService service;

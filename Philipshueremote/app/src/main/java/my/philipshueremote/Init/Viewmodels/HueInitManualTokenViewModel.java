@@ -4,20 +4,15 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 
 import com.android.volley.Request;
-import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Method;
-
-import my.philipshueremote.DataCommunication.CustomJsonObjectRequest;
 import my.philipshueremote.DataCommunication.VolleyJsonSocket;
 import my.philipshueremote.Init.Models.BridgeInfo;
 

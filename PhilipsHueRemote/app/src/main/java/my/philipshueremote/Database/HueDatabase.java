@@ -5,6 +5,11 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import my.philipshueremote.Database.Dao.BridgeDAO;
+import my.philipshueremote.Database.Dao.GroupDAO;
+import my.philipshueremote.Database.Dao.LampDAO;
+import my.philipshueremote.Database.Dao.SceneDAO;
+import my.philipshueremote.Database.Entities.Lamp;
 import my.philipshueremote.Init.Models.BridgeInfo;
 
 @Database(entities = {BridgeInfo.class, Lamp.class}, version = 1)
@@ -19,6 +24,7 @@ public abstract class HueDatabase extends RoomDatabase {
     public static synchronized HueDatabase getInstance(Context appContext) {
         if(Instance == null) {
             Instance = Room.databaseBuilder(appContext, HueDatabase.class, "HUE_DATABASE")
+                    .allowMainThreadQueries()
                     .build();
         }
         return Instance;

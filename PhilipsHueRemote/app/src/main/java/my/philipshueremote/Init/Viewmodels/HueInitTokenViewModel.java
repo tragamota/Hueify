@@ -4,7 +4,6 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.persistence.room.Room;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 
@@ -18,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import my.philipshueremote.DataCommunication.CustomJsonArrayRequest;
+import my.philipshueremote.DataCommunication.Requests.CustomJsonArrayRequest;
 import my.philipshueremote.DataCommunication.VolleyJsonSocket;
 import my.philipshueremote.Database.HueDatabase;
 import my.philipshueremote.Init.Models.BridgeInfo;
