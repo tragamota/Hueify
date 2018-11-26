@@ -5,6 +5,11 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import my.philipshueremote.Database.Dao.BridgeDAO;
 import my.philipshueremote.Database.Dao.GroupDAO;
 import my.philipshueremote.Database.Dao.LampDAO;
@@ -15,6 +20,7 @@ import my.philipshueremote.Init.Models.BridgeInfo;
 @Database(entities = {BridgeInfo.class, Lamp.class}, version = 1)
 public abstract class HueDatabase extends RoomDatabase {
     private static HueDatabase Instance;
+    private ThreadPoolExecutor queryPoolExecutor;
 
     public abstract BridgeDAO bridgeDAO();
     public abstract LampDAO lampDAO();
@@ -24,10 +30,16 @@ public abstract class HueDatabase extends RoomDatabase {
     public static synchronized HueDatabase getInstance(Context appContext) {
         if(Instance == null) {
             Instance = Room.databaseBuilder(appContext, HueDatabase.class, "HUE_DATABASE")
-                    .allowMainThreadQueries()
                     .build();
+            final int NUM_OF_CORES = Runtime.getRuntime().availableProcessors();
+            Instance.queryPoolExecutor = new ThreadPoolExecutor(NUM_OF_CORES * 2, NUM_OF_CORES * 3,
+               30, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
         }
         return Instance;
+    }
+
+    public Future performBackgroundQuery(Runnable runnable) {
+        return queryPoolExecutor.submit(runnable);
     }
 
     public void closeDatabase() {
