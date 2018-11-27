@@ -116,7 +116,7 @@ public class MainAppActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(viewPager.getCurrentItem() == 0 ) {
+        if(viewPager.getCurrentItem() == 0) {
             fragmentActionButton.setImageResource(R.drawable.ic_sync_check);
             fragmentActionButton.setOnClickListener(actionButtonClickActions.get(0));
         }
@@ -134,7 +134,6 @@ public class MainAppActivity extends AppCompatActivity {
         switch(item.getItemId()) {
             case R.id.main_menu_settings:
                 //do something on settings press
-                Toast.makeText(this, "Pressed settings button", Toast.LENGTH_SHORT).show();
                 return true;
         }
         return super.onOptionsItemSelected(item);

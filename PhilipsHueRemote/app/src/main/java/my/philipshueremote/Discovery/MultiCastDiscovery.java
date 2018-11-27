@@ -1,6 +1,7 @@
 package my.philipshueremote.Discovery;
 
 import android.app.Application;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.net.nsd.NsdManager;
@@ -22,6 +23,8 @@ import my.philipshueremote.Init.Models.BridgeInfo;
 import my.philipshueremote.Init.Models.SearchingStates;
 
 public class MultiCastDiscovery implements Discoverable {
+    private static volatile MultiCastDiscovery Instance;
+
     private NsdManager bridgeDiscoveryManager;
     private NsdManager.DiscoveryListener bridgeDiscoveryListener;
     private VolleyJsonSocket volleySocket;
@@ -31,11 +34,12 @@ public class MultiCastDiscovery implements Discoverable {
     private List<JsonRequest> requests;
     private Timer detectionTimer;
 
-    public MultiCastDiscovery(Application appContext, MutableLiveData<SearchingStates> state) {
+    private MultiCastDiscovery(Application appContext) {
         bridgeDiscoveryManager = (NsdManager) appContext.getSystemService(Context.NSD_SERVICE);
         volleySocket = VolleyJsonSocket.getInstance(appContext);
 
-        this.state = state;
+        state = new MutableLiveData<>();
+        state.postValue(SearchingStates.WAITING);
         bridges = new ArrayList<>();
         requests = new ArrayList<>();
         detectionTimer = new Timer();
@@ -43,8 +47,23 @@ public class MultiCastDiscovery implements Discoverable {
         createListener();
     }
 
+    public static synchronized MultiCastDiscovery getInstance(Application application) {
+        if(Instance == null) {
+            Instance = new MultiCastDiscovery(application);
+        }
+        return Instance;
+    }
+
     public List<BridgeInfo> getBridges() {
         return bridges;
+    }
+
+    public LiveData<SearchingStates> getLiveSearchingState() {
+        if(state == null) {
+            state = new MutableLiveData<>();
+            state.postValue(SearchingStates.WAITING);
+        }
+        return state;
     }
 
     @Override
@@ -67,6 +86,14 @@ public class MultiCastDiscovery implements Discoverable {
                 requests.remove(request);
             }
             detectionTimer.cancel();
+        }
+    }
+
+    @Override
+    public void onReset() {
+        if(state.getValue() != SearchingStates.SEARCHING) {
+            state.postValue(SearchingStates.WAITING);
+            bridges.clear();
         }
     }
 

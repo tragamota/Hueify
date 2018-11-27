@@ -22,30 +22,13 @@ public class MainAppViewModel extends AndroidViewModel {
     private MultiCastDiscovery hueDiscoverer;
 
     private MutableLiveData<BridgeInfo> selectedBridge;
-    private MutableLiveData<SearchingStates> discoveryState;
+    private LiveData<SearchingStates> discoveryState;
 
     public MainAppViewModel(@NonNull Application application) {
         super(application);
-        getDiscoveryState();
 
         hueService = HueSyncService.getInstance(application);
-        hueDiscoverer = new MultiCastDiscovery(application, discoveryState);
-    }
-
-    public void startBridgeDiscovery() {
-        hueDiscoverer.onStart();
-    }
-
-    public void stopBridgeDiscovery() {
-        hueDiscoverer.onStop();
-    }
-
-    public void startHueBackgroundService() {
-        hueService.startService();
-    }
-
-    public void stopHueBackgroundService() {
-        hueService.stopService();
+        hueDiscoverer = MultiCastDiscovery.getInstance(application);
     }
 
     public LiveData<BridgeInfo> getSelectedBridge() {
@@ -57,8 +40,7 @@ public class MainAppViewModel extends AndroidViewModel {
 
     public LiveData<SearchingStates> getDiscoveryState() {
         if(discoveryState == null) {
-            discoveryState = new MutableLiveData<>();
-            discoveryState.setValue(SearchingStates.WAITING);
+            discoveryState = hueDiscoverer.getLiveSearchingState();
         }
         return discoveryState;
     }
@@ -85,12 +67,5 @@ public class MainAppViewModel extends AndroidViewModel {
         }
 
         return selectableBridges;
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        stopBridgeDiscovery();
-        stopHueBackgroundService();
     }
 }

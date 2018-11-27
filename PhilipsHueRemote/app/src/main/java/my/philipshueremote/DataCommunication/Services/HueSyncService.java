@@ -1,5 +1,7 @@
 package my.philipshueremote.DataCommunication.Services;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 
 import com.android.volley.Response;
@@ -25,43 +27,40 @@ public class HueSyncService {
     private HueDatabase appDatabase;
     private Timer freqTimer;
 
-    private BridgeInfo selectedBridge;
+    private MutableLiveData<BridgeInfo> selectedBridge;
     private JsonRequest lampJsonRequest, groupJsonRequest, sceneJsonRequest;
     private Response.Listener<JSONObject> onLampSuccess, onGroupSuccess, onSceneSuccess;
 
     private HueSyncService(Context appContext) {
         socket = VolleyJsonSocket.getInstance(appContext);
         appDatabase = HueDatabase.getInstance(appContext);
-        selectedBridge = new BridgeInfo("192.168.0.33", 80, "bla", "1.2.8", "asdasd", "asdasdad");
-        selectedBridge.setBridgeAccessKey("newdeveloper");
+        selectedBridge = new MutableLiveData<>();
+        BridgeInfo tempSelectedBridge = new BridgeInfo("145.48.205.33", 80, "bla", "1.2.8", "asdasd", "asdasdad");
+        tempSelectedBridge.setBridgeAccessKey("iYrmsQq1wu5FxF9CPqpJCnm1GpPVylKBWDUsNDhB");
+        selectedBridge.setValue(tempSelectedBridge);
 
         onLampSuccess = response -> {
-            //System.out.println(response.toString());
+            System.out.print(response.toString());
             Iterator<String> lampKeys = response.keys();
             while (lampKeys.hasNext()) {
                 String lampKey = lampKeys.next();
 
                 Lamp lampEntity;
                 try {
-                    lampEntity = Lamp.parseFromJson(selectedBridge.getBridgeID(),
+                    lampEntity = Lamp.parseFromJson(selectedBridge.getValue().getBridgeID(),
                             Short.decode(lampKey),
                             response.getJSONObject(lampKey));
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    lampJsonRequest = null;
                     break;
                 }
 
                 appDatabase.performBackgroundQuery(() -> {
-                    long startTime = System.currentTimeMillis();
-
                     if (appDatabase.lampDAO().containsLamp(lampEntity.getBridgeID(), lampEntity.getLampApiID()) > 0) {
                         appDatabase.lampDAO().updateLamp(lampEntity);
                     } else {
                         appDatabase.lampDAO().insertLamp(lampEntity);
                     }
-                    long stopTime = System.currentTimeMillis();
-                    System.out.println(stopTime - startTime);
                 });
             }
             lampJsonRequest = null;
@@ -103,13 +102,17 @@ public class HueSyncService {
         return Instance;
     }
 
+    public LiveData<BridgeInfo> getSelectedBridge() {
+        return selectedBridge;
+    }
+
     public void setSelectedBridge(BridgeInfo bridge) {
         if (freqTimer != null) {
             stopService();
-            selectedBridge = bridge;
+            selectedBridge.postValue(bridge);
             startService();
         } else {
-            selectedBridge = bridge;
+            selectedBridge.postValue(bridge);
         }
     }
 
@@ -120,13 +123,16 @@ public class HueSyncService {
                 @Override
                 public void run() {
                     if(lampJsonRequest == null) {
-                        socket.addRequestToQueue((lampJsonRequest = PremadeHueRequest.lampGetRequest(selectedBridge, onLampSuccess, null)));
+                        socket.addRequestToQueue(
+                                (lampJsonRequest = PremadeHueRequest.lampGetRequest(selectedBridge.getValue(),
+                                        onLampSuccess,
+                                        null)));
                     }
                     if(groupJsonRequest == null) {
-                        socket.addRequestToQueue((groupJsonRequest = PremadeHueRequest.groupGetRequest(selectedBridge, onGroupSuccess, null)));
+                        //socket.addRequestToQueue((groupJsonRequest = PremadeHueRequest.groupGetRequest(selectedBridge.getValue(), onGroupSuccess, null)));
                     }
                     if(sceneJsonRequest == null) {
-                        //socket.addRequestToQueue((sceneJsonRequest = PremadeHueRequest.sceneGetRequest(selectedBridge, onSceneSuccess, null)));
+                        //socket.addRequestToQueue((sceneJsonRequest = PremadeHueRequest.sceneGetRequest(selectedBridge.getValue(), onSceneSuccess, null)));
                     }
                 }
             }, 0, 10000);

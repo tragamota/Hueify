@@ -19,15 +19,10 @@ import my.philipshueremote.R;
 public class HueInitDoneFragment extends Fragment {
     private FloatingActionButton doneButton;
 
-    public HueInitDoneFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.hue_init_done_fragment, container, false);
-
         doneButton = view.findViewById(R.id.Init_done_button);
 
         return view;
@@ -36,7 +31,6 @@ public class HueInitDoneFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         doneButton.setOnClickListener(view -> {
             if(getActivity().isTaskRoot()) {
                 startMainActivity();
@@ -48,7 +42,6 @@ public class HueInitDoneFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
         getActivity().setTitle("Done");
     }
 

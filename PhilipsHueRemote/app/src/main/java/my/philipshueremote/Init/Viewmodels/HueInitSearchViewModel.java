@@ -3,7 +3,6 @@ package my.philipshueremote.Init.Viewmodels;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 
 import java.util.List;
@@ -16,18 +15,14 @@ public class HueInitSearchViewModel extends AndroidViewModel {
     private boolean initialSearch;
     private MultiCastDiscovery multiCastDiscovery;
 
-    private MutableLiveData<SearchingStates> searchState;
-
     public HueInitSearchViewModel(@NonNull Application application) {
         super(application);
         initialSearch = false;
-        searchState = new MutableLiveData<>();
-        searchState.postValue(SearchingStates.WAITING);
-        multiCastDiscovery = new MultiCastDiscovery(application, searchState);
+        multiCastDiscovery = MultiCastDiscovery.getInstance(application);
     }
 
     public LiveData<SearchingStates> getSearchState() {
-        return searchState;
+        return multiCastDiscovery.getLiveSearchingState();
     }
 
     public List<BridgeInfo> getBridges() {
@@ -48,6 +43,10 @@ public class HueInitSearchViewModel extends AndroidViewModel {
 
     public void stopSearching() {
         multiCastDiscovery.onStop();
+    }
+
+    public void resetSearchingState() {
+        multiCastDiscovery.onReset();
     }
 
     @Override
