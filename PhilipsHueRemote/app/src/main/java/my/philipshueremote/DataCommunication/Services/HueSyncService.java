@@ -36,8 +36,8 @@ public class HueSyncService {
         socket = VolleyJsonSocket.getInstance(appContext);
         appDatabase = HueDatabase.getInstance(appContext);
         selectedBridge = new MutableLiveData<>();
-        BridgeInfo tempSelectedBridge = new BridgeInfo("145.48.205.33", 80, "bla", "1.2.8", "asdasd", "asdasdad");
-        tempSelectedBridge.setBridgeAccessKey("iYrmsQq1wu5FxF9CPqpJCnm1GpPVylKBWDUsNDhB");
+        BridgeInfo tempSelectedBridge = new BridgeInfo("192.168.0.33", 80, "bla", "1.2.8", "asdasd", "asdasdad");
+        tempSelectedBridge.setBridgeAccessKey("newdeveloper");
         selectedBridge.setValue(tempSelectedBridge);
 
         onLampSuccess = response -> {
@@ -66,7 +66,6 @@ public class HueSyncService {
             lampJsonRequest = null;
         };
         onGroupSuccess = response -> {
-            //System.out.println(response.toString());
             Iterator<String> groupKeys = response.keys();
             while (groupKeys.hasNext()) {
                 try {
@@ -79,7 +78,6 @@ public class HueSyncService {
             groupJsonRequest = null;
         };
         onSceneSuccess = response -> {
-            //System.out.println(response.toString());
             Iterator<String> sceneKeys = response.keys();
             while (sceneKeys.hasNext()) {
                 try {
