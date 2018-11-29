@@ -25,18 +25,18 @@ public class HueSyncService {
 
     private VolleyJsonSocket socket;
     private HueDatabase appDatabase;
-    private Timer freqTimer;
+    private Timer lampFreqTimer, groupFreqTimer;
 
     private MutableLiveData<BridgeInfo> selectedBridge;
-    private JsonRequest lampJsonRequest, groupJsonRequest, sceneJsonRequest;
+    private JsonRequest lampJsonRequest, groupJsonRequest;
     private Response.Listener<JSONObject> onLampSuccess, onGroupSuccess, onSceneSuccess;
 
     private HueSyncService(Context appContext) {
         socket = VolleyJsonSocket.getInstance(appContext);
         appDatabase = HueDatabase.getInstance(appContext);
         selectedBridge = new MutableLiveData<>();
-        BridgeInfo tempSelectedBridge = new BridgeInfo("145.48.205.33", 80, "bla", "1.2.8", "asdasd", "asdasdad");
-        tempSelectedBridge.setBridgeAccessKey("iYrmsQq1wu5FxF9CPqpJCnm1GpPVylKBWDUsNDhB");
+        BridgeInfo tempSelectedBridge = new BridgeInfo("192.168.0.33", 80, "bla", "1.2.8", "asdasd", "asdasdad");
+        tempSelectedBridge.setBridgeAccessKey("newdeveloper");
         selectedBridge.setValue(tempSelectedBridge);
 
         onLampSuccess = response -> {
@@ -44,28 +44,25 @@ public class HueSyncService {
             Iterator<String> lampKeys = response.keys();
             while (lampKeys.hasNext()) {
                 String lampKey = lampKeys.next();
-
                 Lamp lampEntity;
                 try {
                     lampEntity = Lamp.parseFromJson(selectedBridge.getValue().getBridgeID(),
                             Short.decode(lampKey),
                             response.getJSONObject(lampKey));
+
+                    appDatabase.performBackgroundQuery(() -> {
+                        if (appDatabase.lampDAO().containsLamp(lampEntity.getBridgeID(), lampEntity.getLampApiID()) > 0) {
+                            appDatabase.lampDAO().updateLamp(lampEntity);
+                        } else {
+                            appDatabase.lampDAO().insertLamp(lampEntity);
+                        }
+                    });
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    break;
                 }
-
-                appDatabase.performBackgroundQuery(() -> {
-                    if (appDatabase.lampDAO().containsLamp(lampEntity.getBridgeID(), lampEntity.getLampApiID()) > 0) {
-                        appDatabase.lampDAO().updateLamp(lampEntity);
-                    } else {
-                        appDatabase.lampDAO().insertLamp(lampEntity);
-                    }
-                });
             }
             lampJsonRequest = null;
         };
-
         onGroupSuccess = response -> {
             //System.out.println(response.toString());
             Iterator<String> groupKeys = response.keys();
@@ -79,7 +76,6 @@ public class HueSyncService {
             }
             groupJsonRequest = null;
         };
-
         onSceneSuccess = response -> {
             //System.out.println(response.toString());
             Iterator<String> sceneKeys = response.keys();
@@ -91,7 +87,6 @@ public class HueSyncService {
                     e.printStackTrace();
                 }
             }
-            sceneJsonRequest = null;
         };
     }
 
@@ -107,9 +102,9 @@ public class HueSyncService {
     }
 
     public void setSelectedBridge(BridgeInfo bridge) {
-        if (freqTimer != null) {
+        if (lampFreqTimer != null && groupFreqTimer != null) {
             stopService();
-            selectedBridge.postValue(bridge);
+            selectedBridge.setValue(bridge);
             startService();
         } else {
             selectedBridge.postValue(bridge);
@@ -117,9 +112,10 @@ public class HueSyncService {
     }
 
     public void startService() {
-        if (freqTimer == null && selectedBridge != null) {
-            freqTimer = new Timer();
-            freqTimer.scheduleAtFixedRate(new TimerTask() {
+        if (lampFreqTimer == null && groupFreqTimer == null && selectedBridge.getValue() != null) {
+            socket.addRequestToQueue(PremadeHueRequest.sceneGetRequest(selectedBridge.getValue(), onSceneSuccess, null));
+            lampFreqTimer = new Timer();
+            lampFreqTimer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
                     if(lampJsonRequest == null) {
@@ -128,21 +124,31 @@ public class HueSyncService {
                                         onLampSuccess,
                                         null)));
                     }
-                    if(groupJsonRequest == null) {
-                        //socket.addRequestToQueue((groupJsonRequest = PremadeHueRequest.groupGetRequest(selectedBridge.getValue(), onGroupSuccess, null)));
-                    }
-                    if(sceneJsonRequest == null) {
-                        //socket.addRequestToQueue((sceneJsonRequest = PremadeHueRequest.sceneGetRequest(selectedBridge.getValue(), onSceneSuccess, null)));
-                    }
                 }
             }, 0, 10000);
+            groupFreqTimer = new Timer();
+            groupFreqTimer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    if(groupJsonRequest == null) {
+                        socket.addRequestToQueue(
+                                (groupJsonRequest = PremadeHueRequest.groupGetRequest(selectedBridge.getValue(),
+                                        onGroupSuccess,
+                                        null)));
+                    }
+                }
+            },0, 1000*60*2);
         }
     }
 
     public void stopService() {
-        if (freqTimer != null) {
-            freqTimer.cancel();
-            freqTimer = null;
+        if (lampFreqTimer != null) {
+            lampFreqTimer.cancel();
+            lampFreqTimer = null;
+        }
+        if(groupFreqTimer != null) {
+            groupFreqTimer.cancel();
+            groupFreqTimer = null;
         }
     }
 }

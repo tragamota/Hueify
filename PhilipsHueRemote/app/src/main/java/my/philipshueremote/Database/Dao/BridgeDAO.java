@@ -1,5 +1,6 @@
 package my.philipshueremote.Database.Dao;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -18,7 +19,7 @@ public interface BridgeDAO {
     BridgeInfo getBridgeBasedOnID(String bridgeID);
 
     @Query("SELECT COUNT(*) FROM BridgeInfo")
-    int sizeOfBridges();
+    LiveData<Integer> sizeOfBridges();
 
     @Insert
     void insertBridgeInformation(BridgeInfo bridge);

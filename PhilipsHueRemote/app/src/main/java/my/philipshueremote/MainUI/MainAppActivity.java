@@ -133,7 +133,8 @@ public class MainAppActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.main_menu_settings:
-                //do something on settings press
+                Intent intent = new Intent(this, MainSettingActivity.class);
+                startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);

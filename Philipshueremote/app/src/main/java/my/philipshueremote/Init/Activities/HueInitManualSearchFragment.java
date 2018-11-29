@@ -82,9 +82,9 @@ public class HueInitManualSearchFragment extends Fragment {
                 statusText.setText("Searching for bridge");
                 searchingBar.setIndeterminate(true);
                 editTextLayout.setEnabled(false);
-                proceedButton.hide();
                 proceedButton.setClickable(false);
                 proceedButton.setImageResource(R.drawable.ic_search_glass);
+                proceedButton.hide();
             }
             else if(integer == viewModel.BRIDGE_FOUND) {
                 statusText.setVisibility(View.VISIBLE);
@@ -92,9 +92,9 @@ public class HueInitManualSearchFragment extends Fragment {
                 statusText.setText("Found your bridge");
                 searchingBar.setIndeterminate(false);
                 editTextLayout.setEnabled(false);
-                proceedButton.show();
                 proceedButton.setClickable(true);
                 proceedButton.setImageResource(R.drawable.ic_forward_arrow);
+                proceedButton.show();
             }
             else {
                 statusText.setVisibility(View.VISIBLE);
@@ -102,15 +102,14 @@ public class HueInitManualSearchFragment extends Fragment {
                 statusText.setText("No bridge found");
                 searchingBar.setIndeterminate(false);
                 editTextLayout.setEnabled(true);
-                proceedButton.show();
                 proceedButton.setClickable(true);
                 proceedButton.setImageResource(R.drawable.ic_search_glass);
+                proceedButton.show();
             }
         });
 
         proceedButton.setOnClickListener(view -> {
             int currentState = viewModel.getBridgeState().getValue();
-            proceedToNextFragment();
             if(currentState == viewModel.NO_SEARCH || currentState == viewModel.NO_BRIDGE_FOUND) {
                 viewModel.startSearching(editText.getText().toString());
             }

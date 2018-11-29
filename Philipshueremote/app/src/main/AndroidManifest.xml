@@ -9,6 +9,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_configs"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Dark">
@@ -20,7 +21,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".Init.Activities.HueInitActivity" />
-        <activity android:name=".MainUI.MainAppActivity"></activity>
+        <activity android:name=".MainUI.MainAppActivity" />
+        <activity
+            android:name=".MainUI.MainSettingActivity"
+            android:label="@string/title_activity_main_setting"></activity>
     </application>
 
 </manifest>
