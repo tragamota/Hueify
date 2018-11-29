@@ -20,7 +20,7 @@ public class SplashActivity extends AppCompatActivity {
         HueDatabase.getInstance(this.getApplicationContext())
                 .bridgeDAO().sizeOfBridges().observe(this, integer -> {
             Intent intent;
-            if(integer > 0) {
+            if(integer < 1) {
                 intent = new Intent(this, MainAppActivity.class);
             }
             else {
