@@ -4,30 +4,41 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import java.util.concurrent.Future;
+
+import my.philipshueremote.DataCommunication.Services.HueSyncService;
 import my.philipshueremote.Database.HueDatabase;
 import my.philipshueremote.Init.Activities.HueInitActivity;
 import my.philipshueremote.MainUI.MainAppActivity;
 import my.philipshueremote.R;
 
 public class SplashActivity extends AppCompatActivity {
-
+    private int totalBridgeSize;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_Dark);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        HueDatabase.getInstance(this.getApplicationContext())
-                .bridgeDAO().sizeOfBridges().observe(this, integer -> {
-            Intent intent;
-            if(integer < 1) {
-                intent = new Intent(this, MainAppActivity.class);
-            }
-            else {
-                intent = new Intent(this, HueInitActivity.class);
-            }
-            startActivity(intent);
-            finish();
+
+
+        Future bridgeSize = HueDatabase.getInstance(this).performBackgroundQuery(() -> {
+            totalBridgeSize = HueDatabase.getInstance(this).bridgeDAO().sizeOfBridges();
         });
+
+
+        while(!bridgeSize.isDone()) {
+            Thread.yield();
+        }
+
+        Intent intent;
+        if(totalBridgeSize < 1) {
+            intent = new Intent(this, MainAppActivity.class);
+        }
+        else {
+            intent = new Intent(this, HueInitActivity.class);
+        }
+        startActivity(intent);
+        finish();
     }
 }

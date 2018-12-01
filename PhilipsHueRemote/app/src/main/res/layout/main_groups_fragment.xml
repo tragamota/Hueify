@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".MainUI.Fragments.GroupFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/Main_group_recyclerview"
         android:layout_width="match_parent"

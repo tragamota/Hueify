@@ -19,7 +19,7 @@ public interface BridgeDAO {
     BridgeInfo getBridgeBasedOnID(String bridgeID);
 
     @Query("SELECT COUNT(*) FROM BridgeInfo")
-    LiveData<Integer> sizeOfBridges();
+    int sizeOfBridges();
 
     @Insert
     void insertBridgeInformation(BridgeInfo bridge);

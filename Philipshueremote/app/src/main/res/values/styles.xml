@@ -14,7 +14,6 @@
         <item name="colorAccent">@color/colorDarkAccent</item>
         <item name="android:textColorPrimary">@color/colorDarkPrimaryText</item>
         <item name="android:textColorHighlight">@color/colorDarkHighLight</item>
-        <item name="android:buttonStyle">@style/DarkBorderlessButtonText</item>
     </style>
 
     <style name="DarkBorderlessButtonText" parent="@style/Widget.AppCompat.Button.Borderless.Colored">
