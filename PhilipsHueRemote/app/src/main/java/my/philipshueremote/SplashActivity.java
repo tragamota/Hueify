@@ -6,11 +6,9 @@ import android.os.Bundle;
 
 import java.util.concurrent.Future;
 
-import my.philipshueremote.DataCommunication.Services.HueSyncService;
 import my.philipshueremote.Database.HueDatabase;
 import my.philipshueremote.Init.Activities.HueInitActivity;
 import my.philipshueremote.MainUI.MainAppActivity;
-import my.philipshueremote.R;
 
 public class SplashActivity extends AppCompatActivity {
     private int totalBridgeSize;
@@ -20,12 +18,9 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-
-
         Future bridgeSize = HueDatabase.getInstance(this).performBackgroundQuery(() -> {
             totalBridgeSize = HueDatabase.getInstance(this).bridgeDAO().sizeOfBridges();
         });
-
 
         while(!bridgeSize.isDone()) {
             Thread.yield();

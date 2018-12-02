@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -21,7 +22,6 @@ public class MainAppViewModel extends AndroidViewModel {
     private HueSyncService hueService;
     private MultiCastDiscovery hueDiscoverer;
 
-    private MutableLiveData<BridgeInfo> selectedBridge;
     private LiveData<SearchingStates> discoveryState;
 
     public MainAppViewModel(@NonNull Application application) {
@@ -31,14 +31,19 @@ public class MainAppViewModel extends AndroidViewModel {
         hueDiscoverer = MultiCastDiscovery.getInstance(application);
     }
 
-    public LiveData<BridgeInfo> getSelectedBridge() {
-        if(selectedBridge == null) {
-            selectedBridge = new MutableLiveData<>();
-        }
-        return selectedBridge;
-    }
-
     public LiveData<SearchingStates> getDiscoveryState() {
+        Transformations.switchMap(hueDiscoverer.getLiveSearchingState(), input -> {
+            SearchingStates validSearchingState = SearchingStates.WAITING;
+            if(input == SearchingStates.FOUND) {
+                for(BridgeInfo bridge : hueDiscoverer.getBridges()) {
+                    HueDatabase.getInstance(getApplication()).bridgeDAO().getBridgeBasedOnID()
+                }
+            }
+            else {
+                return input;
+            }
+        });
+
         if(discoveryState == null) {
             discoveryState = hueDiscoverer.getLiveSearchingState();
         }
@@ -46,7 +51,8 @@ public class MainAppViewModel extends AndroidViewModel {
     }
 
     public void setSelectedBridge(BridgeInfo selectedBridge) {
-        this.selectedBridge.setValue(selectedBridge);
+        hueService.setSelectedBridge(selectedBridge);
+        hueService.startService();
     }
 
     public List<BridgeInfo> getListOfPossibleBridges() {
