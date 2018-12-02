@@ -19,6 +19,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import my.philipshueremote.DataCommunication.VolleyJsonSocket;
+import my.philipshueremote.Database.HueDatabase;
 import my.philipshueremote.Init.Models.BridgeInfo;
 import my.philipshueremote.Init.Models.SearchingStates;
 
@@ -39,7 +40,7 @@ public class MultiCastDiscovery implements Discoverable {
         volleySocket = VolleyJsonSocket.getInstance(appContext);
 
         state = new MutableLiveData<>();
-        state.postValue(SearchingStates.WAITING);
+        state.setValue(SearchingStates.WAITING);
         bridges = new ArrayList<>();
         requests = new ArrayList<>();
         detectionTimer = new Timer();
@@ -61,7 +62,7 @@ public class MultiCastDiscovery implements Discoverable {
     public LiveData<SearchingStates> getLiveSearchingState() {
         if(state == null) {
             state = new MutableLiveData<>();
-            state.postValue(SearchingStates.WAITING);
+            state.setValue(SearchingStates.WAITING);
         }
         return state;
     }
@@ -156,7 +157,6 @@ public class MultiCastDiscovery implements Discoverable {
                 bridges.add(BridgeInfo.BridgeInfo(ipAddress, portNumber, response));
             } catch (JSONException e) {
                 e.printStackTrace();
-                requests.remove(this);
             } finally {
                 requests.remove(this);
             }

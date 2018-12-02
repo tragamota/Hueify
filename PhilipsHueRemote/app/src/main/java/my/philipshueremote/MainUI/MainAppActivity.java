@@ -2,6 +2,7 @@ package my.philipshueremote.MainUI;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
@@ -48,6 +49,9 @@ public class MainAppActivity extends AppCompatActivity {
         bottomNavigation = findViewById(R.id.Main_bottom_navigation);
         fragmentActionButton = findViewById(R.id.Main_action_button);
         connectionStatusCard = findViewById(R.id.include);
+        connectionStatusText = findViewById(R.id.Main_connection_Text);
+        connectionStatusProBar = findViewById(R.id.Main_connection_waiting_bar);
+        connectionStatusCancelImage = findViewById(R.id.Main_connection_close);
 
         viewPager.setAdapter(new ScreenSlidePageAdapter(getSupportFragmentManager()));
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -122,19 +126,36 @@ public class MainAppActivity extends AppCompatActivity {
         });
 
         viewModel.getDiscoveryState().observe(this, searchingStates ->  {
+            int color;
+            connectionStatusCard.setVisibility(View.VISIBLE);
             switch(searchingStates) {
                 case SEARCHING:
-                    connectionStatusCard.setVisibility(View.VISIBLE);
+                    color = connectionStatusCard.getCardBackgroundColor().getDefaultColor();
+                    connectionStatusCard.setCardBackgroundColor(color);
+                    connectionStatusText.setText("Verbinden...");
+                    connectionStatusProBar.setVisibility(View.VISIBLE);
+                    connectionStatusCancelImage.setVisibility(View.INVISIBLE);
                     break;
                 case FOUND:
-
+                    color = getResources().getColor(R.color.colorDarkPassTextLight);
+                    connectionStatusCard.setCardBackgroundColor(color);
+                    connectionStatusText.setText("Verbonden...");
+                    connectionStatusProBar.setVisibility(View.INVISIBLE);
+                    connectionStatusCancelImage.setVisibility(View.VISIBLE);
+                    break;
+                case WAITING:
+                    color = getResources().getColor(R.color.colorDarkFailTextLight);
+                    connectionStatusCard.setCardBackgroundColor(color);
+                    connectionStatusText.setText("Kon niet verbinden...");
+                    connectionStatusProBar.setVisibility(View.INVISIBLE);
+                    connectionStatusCancelImage.setVisibility(View.VISIBLE);
                     break;
             }
         });
 
-        connectionStatusCard.setOnClickListener(view -> {
-            connectionStatusCard.setVisibility(View.GONE);
-        });
+        connectionStatusCard.setOnClickListener(view ->
+                connectionStatusCard.setVisibility(View.GONE)
+        );
     }
 
     @Override

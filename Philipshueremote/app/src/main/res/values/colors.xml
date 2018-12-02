@@ -11,4 +11,6 @@
     <color name="colorDarkHighLight">#95CE93D8</color>
     <color name="colorDarkFailText">#FFEE0000</color>
     <color name="colorDarkPassText">#FF00EE00</color>
+    <color name="colorDarkFailTextLight">#FFAA0000</color>
+    <color name="colorDarkPassTextLight">#FF00AA00</color>
 </resources>

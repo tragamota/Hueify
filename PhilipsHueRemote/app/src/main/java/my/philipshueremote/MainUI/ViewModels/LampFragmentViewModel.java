@@ -19,7 +19,6 @@ import my.philipshueremote.Init.Models.BridgeInfo;
 
 public class LampFragmentViewModel extends AndroidViewModel {
     private HueDatabase database;
-    private List<Lamp> lamps;
 
     private LiveData<BridgeInfo> bridgeLiveInfo;
     private LiveData<List<Lamp>> liveLampList;

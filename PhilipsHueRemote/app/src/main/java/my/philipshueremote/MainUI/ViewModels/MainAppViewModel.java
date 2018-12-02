@@ -3,6 +3,7 @@ package my.philipshueremote.MainUI.ViewModels;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
@@ -22,30 +23,44 @@ public class MainAppViewModel extends AndroidViewModel {
     private HueSyncService hueService;
     private MultiCastDiscovery hueDiscoverer;
 
-    private LiveData<SearchingStates> discoveryState;
+    private MediatorLiveData<SearchingStates> discoveryState;
 
     public MainAppViewModel(@NonNull Application application) {
         super(application);
 
         hueService = HueSyncService.getInstance(application);
         hueDiscoverer = MultiCastDiscovery.getInstance(application);
+        hueDiscoverer.onStart();
     }
 
     public LiveData<SearchingStates> getDiscoveryState() {
-        Transformations.switchMap(hueDiscoverer.getLiveSearchingState(), input -> {
-            SearchingStates validSearchingState = SearchingStates.WAITING;
-            if(input == SearchingStates.FOUND) {
-                for(BridgeInfo bridge : hueDiscoverer.getBridges()) {
-                    HueDatabase.getInstance(getApplication()).bridgeDAO().getBridgeBasedOnID()
-                }
-            }
-            else {
-                return input;
-            }
-        });
+        if (discoveryState == null) {
+            discoveryState = new MediatorLiveData<>();
+            discoveryState.addSource(hueDiscoverer.getLiveSearchingState(), searchingStates -> {
+                if (searchingStates == SearchingStates.FOUND) {
+                    HueDatabase database = HueDatabase.getInstance(getApplication());
+                    database.performBackgroundQuery(() -> {
+                        List<BridgeInfo> validBridges = new ArrayList<>();
 
-        if(discoveryState == null) {
-            discoveryState = hueDiscoverer.getLiveSearchingState();
+                        BridgeInfo bridgeToAdd;
+                        for (BridgeInfo bridge : hueDiscoverer.getBridges()) {
+                            bridgeToAdd = database.bridgeDAO().getBridgeBasedOnID(bridge.getBridgeID());
+                            if(bridgeToAdd != null) {
+                                validBridges.add(bridgeToAdd);
+                            }
+                        }
+
+                        if (!validBridges.isEmpty()) {
+                            discoveryState.postValue(SearchingStates.FOUND);
+                            setSelectedBridge(validBridges.get(0));
+                        } else {
+                            discoveryState.postValue(SearchingStates.WAITING);
+                        }
+                    });
+                } else {
+                    discoveryState.postValue(searchingStates);
+                }
+            });
         }
         return discoveryState;
     }
@@ -53,25 +68,5 @@ public class MainAppViewModel extends AndroidViewModel {
     public void setSelectedBridge(BridgeInfo selectedBridge) {
         hueService.setSelectedBridge(selectedBridge);
         hueService.startService();
-    }
-
-    public List<BridgeInfo> getListOfPossibleBridges() {
-        HueDatabase tempDatabase = HueDatabase.getInstance(getApplication().getApplicationContext());
-        List<BridgeInfo> selectableBridges = new ArrayList<>();
-        List<BridgeInfo> discoveredBridges = hueDiscoverer.getBridges();
-
-        for(BridgeInfo discoveredBridge : discoveredBridges) {
-            BridgeInfo bridgeInstance = tempDatabase.bridgeDAO()
-                    .getBridgeBasedOnID(discoveredBridge.getBridgeID());
-            if(bridgeInstance != null) {
-                selectableBridges.add(bridgeInstance);
-            }
-        }
-
-        if(selectableBridges.isEmpty()) {
-            selectableBridges.addAll(tempDatabase.bridgeDAO().getAllBridgeInformation());
-        }
-
-        return selectableBridges;
     }
 }
