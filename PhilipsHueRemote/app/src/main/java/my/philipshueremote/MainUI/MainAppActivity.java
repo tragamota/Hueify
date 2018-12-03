@@ -19,6 +19,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import my.philipshueremote.Init.Models.SearchingStates;
 import my.philipshueremote.MainUI.Adapters.ScreenSlidePageAdapter;
 import my.philipshueremote.MainUI.ViewModels.MainAppViewModel;
 import my.philipshueremote.R;
@@ -127,7 +128,14 @@ public class MainAppActivity extends AppCompatActivity {
 
         viewModel.getDiscoveryState().observe(this, searchingStates ->  {
             int color;
-            connectionStatusCard.setVisibility(View.VISIBLE);
+            if(viewModel.isConnectionStateHidden() &&
+                    searchingStates == SearchingStates.WAITING) {
+                connectionStatusCard.setVisibility(View.GONE);
+                return;
+            }
+            else {
+                connectionStatusCard.setVisibility(View.VISIBLE);
+            }
             switch(searchingStates) {
                 case SEARCHING:
                     color = connectionStatusCard.getCardBackgroundColor().getDefaultColor();
@@ -153,9 +161,10 @@ public class MainAppActivity extends AppCompatActivity {
             }
         });
 
-        connectionStatusCard.setOnClickListener(view ->
-                connectionStatusCard.setVisibility(View.GONE)
-        );
+        connectionStatusCard.setOnClickListener(view -> {
+            connectionStatusCard.setVisibility(View.GONE);
+            viewModel.hideConnectionState();
+        });
     }
 
     @Override

@@ -3,12 +3,13 @@ package my.philipshueremote.MainUI.Adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import my.philipshueremote.MainUI.Fragments.GroupFragment;
 import my.philipshueremote.MainUI.Fragments.LampFragment;
 import my.philipshueremote.MainUI.Fragments.SceneFragment;
 
-public class ScreenSlidePageAdapter extends FragmentPagerAdapter {
+public class ScreenSlidePageAdapter extends FragmentStatePagerAdapter {
     private final int TOTAL_ITEMS_IN_PAGER = 3;
 
     public ScreenSlidePageAdapter(FragmentManager fm) {

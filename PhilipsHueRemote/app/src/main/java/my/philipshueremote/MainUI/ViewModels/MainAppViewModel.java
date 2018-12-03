@@ -4,8 +4,6 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -24,6 +22,7 @@ public class MainAppViewModel extends AndroidViewModel {
     private MultiCastDiscovery hueDiscoverer;
 
     private MediatorLiveData<SearchingStates> discoveryState;
+    private boolean isConnectionStatusHidden;
 
     public MainAppViewModel(@NonNull Application application) {
         super(application);
@@ -63,6 +62,14 @@ public class MainAppViewModel extends AndroidViewModel {
             });
         }
         return discoveryState;
+    }
+
+    public boolean isConnectionStateHidden() {
+        return isConnectionStatusHidden;
+    }
+
+    public void hideConnectionState() {
+        isConnectionStatusHidden = true;
     }
 
     public void setSelectedBridge(BridgeInfo selectedBridge) {
