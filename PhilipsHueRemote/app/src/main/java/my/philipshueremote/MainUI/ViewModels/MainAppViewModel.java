@@ -29,7 +29,6 @@ public class MainAppViewModel extends AndroidViewModel {
 
         hueService = HueSyncService.getInstance(application);
         hueDiscoverer = MultiCastDiscovery.getInstance(application);
-        hueDiscoverer.onStart();
     }
 
     public LiveData<SearchingStates> getDiscoveryState() {
@@ -68,8 +67,12 @@ public class MainAppViewModel extends AndroidViewModel {
         return isConnectionStatusHidden;
     }
 
-    public void hideConnectionState() {
-        isConnectionStatusHidden = true;
+    public void setConnectionStateHidden(boolean value) {
+        isConnectionStatusHidden = value;
+    }
+
+    public boolean isActiveSearch() {
+        return hueDiscoverer.isActive();
     }
 
     public void setSelectedBridge(BridgeInfo selectedBridge) {

@@ -56,9 +56,10 @@ public class LampRecyclerAdapter extends RecyclerView.Adapter<LampRecyclerAdapte
     @Override
     public void onBindViewHolder(@NonNull LampViewHolder holder, int position){
         Lamp positionLamp = lamps.get(position);
+        holder.cardView.setCardBackgroundColor(positionLamp.getState().getRGB());
         holder.cardView.setOnClickListener(view -> Toast.makeText(holder.cardView.getContext(), "Op card gedrukt!", Toast.LENGTH_SHORT).show());
         holder.lampTitle.setText(positionLamp.getLampName());
-        holder.lampSwitch.setChecked(!positionLamp.getState().isOn());
+        holder.lampSwitch.setChecked(positionLamp.getState().isOn());
     }
 
     @Override

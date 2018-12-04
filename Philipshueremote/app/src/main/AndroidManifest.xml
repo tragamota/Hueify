@@ -24,7 +24,8 @@
         <activity android:name=".MainUI.MainAppActivity" />
         <activity
             android:name=".MainUI.MainSettingActivity"
-            android:label="@string/title_activity_main_setting"></activity>
+            android:label="@string/title_activity_main_setting" />
+        <activity android:name=".MainUI.Activities.LampEditActivity"></activity>
     </application>
 
 </manifest>

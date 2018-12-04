@@ -30,12 +30,13 @@ public class MultiCastDiscovery implements Discoverable {
     private NsdManager.DiscoveryListener bridgeDiscoveryListener;
     private VolleyJsonSocket volleySocket;
 
+    private boolean active;
     private MutableLiveData<SearchingStates> state;
     private List<BridgeInfo> bridges;
     private List<JsonRequest> requests;
     private Timer detectionTimer;
 
-    private MultiCastDiscovery(Application appContext) {
+    private MultiCastDiscovery(Context appContext) {
         bridgeDiscoveryManager = (NsdManager) appContext.getSystemService(Context.NSD_SERVICE);
         volleySocket = VolleyJsonSocket.getInstance(appContext);
 
@@ -48,9 +49,9 @@ public class MultiCastDiscovery implements Discoverable {
         createListener();
     }
 
-    public static synchronized MultiCastDiscovery getInstance(Application application) {
+    public static synchronized MultiCastDiscovery getInstance(Context appContext) {
         if(Instance == null) {
-            Instance = new MultiCastDiscovery(application);
+            Instance = new MultiCastDiscovery(appContext);
         }
         return Instance;
     }
@@ -67,10 +68,15 @@ public class MultiCastDiscovery implements Discoverable {
         return state;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
     @Override
     public void onStart() {
         if(state.getValue() != SearchingStates.SEARCHING) {
-            state.postValue(SearchingStates.SEARCHING);
+            active = true;
+            state.setValue(SearchingStates.SEARCHING);
             bridges.clear();
             bridgeDiscoveryManager.discoverServices("_hue._tcp", NsdManager.PROTOCOL_DNS_SD, bridgeDiscoveryListener);
         }
@@ -79,6 +85,7 @@ public class MultiCastDiscovery implements Discoverable {
     @Override
     public void onStop() {
         if(state.getValue() == SearchingStates.SEARCHING) {
+            active = false;
             state.postValue(bridges.isEmpty() ? SearchingStates.WAITING : SearchingStates.FOUND);
             bridgeDiscoveryManager.stopServiceDiscovery(bridgeDiscoveryListener);
 

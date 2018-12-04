@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import my.philipshueremote.Init.Models.SearchingStates;
+import my.philipshueremote.MainUI.Activities.LampEditActivity;
 import my.philipshueremote.MainUI.Adapters.ScreenSlidePageAdapter;
 import my.philipshueremote.MainUI.ViewModels.MainAppViewModel;
 import my.philipshueremote.R;
@@ -53,6 +54,9 @@ public class MainAppActivity extends AppCompatActivity {
         connectionStatusText = findViewById(R.id.Main_connection_Text);
         connectionStatusProBar = findViewById(R.id.Main_connection_waiting_bar);
         connectionStatusCancelImage = findViewById(R.id.Main_connection_close);
+
+        Intent intent2 = new Intent(this, LampEditActivity.class);
+        startActivity(intent2);
 
         viewPager.setAdapter(new ScreenSlidePageAdapter(getSupportFragmentManager()));
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -128,19 +132,13 @@ public class MainAppActivity extends AppCompatActivity {
 
         viewModel.getDiscoveryState().observe(this, searchingStates ->  {
             int color;
-            if(viewModel.isConnectionStateHidden() &&
-                    searchingStates == SearchingStates.WAITING) {
-                connectionStatusCard.setVisibility(View.GONE);
-                return;
-            }
-            else {
-                connectionStatusCard.setVisibility(View.VISIBLE);
-            }
+            connectionStatusCard.setVisibility(View.VISIBLE);
             switch(searchingStates) {
                 case SEARCHING:
                     color = connectionStatusCard.getCardBackgroundColor().getDefaultColor();
                     connectionStatusCard.setCardBackgroundColor(color);
                     connectionStatusText.setText("Verbinden...");
+                    System.out.println(connectionStatusText.getTextColors().getDefaultColor());
                     connectionStatusProBar.setVisibility(View.VISIBLE);
                     connectionStatusCancelImage.setVisibility(View.INVISIBLE);
                     break;
@@ -163,7 +161,6 @@ public class MainAppActivity extends AppCompatActivity {
 
         connectionStatusCard.setOnClickListener(view -> {
             connectionStatusCard.setVisibility(View.GONE);
-            viewModel.hideConnectionState();
         });
     }
 

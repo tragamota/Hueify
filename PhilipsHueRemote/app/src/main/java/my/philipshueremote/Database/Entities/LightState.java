@@ -1,6 +1,7 @@
 package my.philipshueremote.Database.Entities;
 
 import android.arch.persistence.room.TypeConverters;
+import android.graphics.Color;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -136,6 +137,15 @@ public class LightState {
     public void setColorTemperature(int colorTemperature) {
         this.colorTemperature = colorTemperature;
     }
+
+    public int getRGB() {
+        float[] hsv = new float[3];
+        hsv[0] = (hue / 65535f) * 360f;
+        hsv[1] = (saturation / 255f);
+        hsv[2] = (brightness / 255f);
+        return Color.HSVToColor(255, hsv);
+    }
+
 
     public static LightState parseFromJson(String lampType, JSONObject stateObject) throws JSONException {
         LightState returnLightState = null;
