@@ -2,7 +2,6 @@ package my.philipshueremote.MainUI;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import my.philipshueremote.Init.Models.SearchingStates;
 import my.philipshueremote.MainUI.Activities.LampEditActivity;
 import my.philipshueremote.MainUI.Adapters.ScreenSlidePageAdapter;
 import my.philipshueremote.MainUI.ViewModels.MainAppViewModel;
@@ -54,9 +52,6 @@ public class MainAppActivity extends AppCompatActivity {
         connectionStatusText = findViewById(R.id.Main_connection_Text);
         connectionStatusProBar = findViewById(R.id.Main_connection_waiting_bar);
         connectionStatusCancelImage = findViewById(R.id.Main_connection_close);
-
-        Intent intent2 = new Intent(this, LampEditActivity.class);
-        startActivity(intent2);
 
         viewPager.setAdapter(new ScreenSlidePageAdapter(getSupportFragmentManager()));
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

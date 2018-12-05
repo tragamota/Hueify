@@ -72,7 +72,7 @@ public class MainAppViewModel extends AndroidViewModel {
     }
 
     public boolean isActiveSearch() {
-        return hueDiscoverer.isActive();
+        return hueDiscoverer.hadInitialSearch();
     }
 
     public void setSelectedBridge(BridgeInfo selectedBridge) {

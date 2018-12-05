@@ -142,10 +142,9 @@ public class LightState {
         float[] hsv = new float[3];
         hsv[0] = (hue / 65535f) * 360f;
         hsv[1] = (saturation / 255f);
-        hsv[2] = (brightness / 255f);
+        hsv[2] = (1.0f);
         return Color.HSVToColor(255, hsv);
     }
-
 
     public static LightState parseFromJson(String lampType, JSONObject stateObject) throws JSONException {
         LightState returnLightState = null;

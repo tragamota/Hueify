@@ -1,6 +1,7 @@
 package my.philipshueremote.MainUI.Adapters;
 
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
@@ -32,14 +33,16 @@ public class LampRecyclerAdapter extends RecyclerView.Adapter<LampRecyclerAdapte
 
     public static class LampViewHolder extends ViewHolder{
         public CardView cardView;
+        public ConstraintLayout backgroundDrawable;
         public TextView lampTitle;
         public ImageView lampImage;
-        public SeekBar lampBrightness;
         public Switch lampSwitch;
+        public SeekBar lampBrightness;
 
         public LampViewHolder(@NonNull View itemView) {
             super(itemView);
             this.cardView = itemView.findViewById(R.id.main_lamp_cardview);
+            this.backgroundDrawable = itemView.findViewById(R.id.main_lamp_constraint);
             this.lampTitle = itemView.findViewById(R.id.main_lamp_cardview_title);
             this.lampImage = itemView.findViewById(R.id.main_lamp_cardview_image);
             this.lampBrightness = itemView.findViewById(R.id.main_lamp_cardview_seekbar);
@@ -56,10 +59,15 @@ public class LampRecyclerAdapter extends RecyclerView.Adapter<LampRecyclerAdapte
     @Override
     public void onBindViewHolder(@NonNull LampViewHolder holder, int position){
         Lamp positionLamp = lamps.get(position);
-        holder.cardView.setCardBackgroundColor(positionLamp.getState().getRGB());
-        holder.cardView.setOnClickListener(view -> Toast.makeText(holder.cardView.getContext(), "Op card gedrukt!", Toast.LENGTH_SHORT).show());
+        //holder.cardView.setCardBackgroundColor(positionLamp.getState().getRGB());
+        holder.backgroundDrawable.setBackgroundColor(positionLamp.getState().getRGB());
+
         holder.lampTitle.setText(positionLamp.getLampName());
+        holder.lampBrightness.setProgress(positionLamp.getState().getBrightness());
         holder.lampSwitch.setChecked(positionLamp.getState().isOn());
+
+        holder.cardView.setOnClickListener(view ->
+                Toast.makeText(holder.cardView.getContext(), "Op card gedrukt!", Toast.LENGTH_SHORT).show());
     }
 
     @Override

@@ -1,17 +1,14 @@
 package my.philipshueremote.Discovery;
 
-import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +16,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import my.philipshueremote.DataCommunication.VolleyJsonSocket;
-import my.philipshueremote.Database.HueDatabase;
 import my.philipshueremote.Init.Models.BridgeInfo;
 import my.philipshueremote.Init.Models.SearchingStates;
 
@@ -30,7 +26,7 @@ public class MultiCastDiscovery implements Discoverable {
     private NsdManager.DiscoveryListener bridgeDiscoveryListener;
     private VolleyJsonSocket volleySocket;
 
-    private boolean active;
+    private boolean initialSearchDone;
     private MutableLiveData<SearchingStates> state;
     private List<BridgeInfo> bridges;
     private List<JsonRequest> requests;
@@ -68,14 +64,18 @@ public class MultiCastDiscovery implements Discoverable {
         return state;
     }
 
-    public boolean isActive() {
-        return active;
+    public boolean hadInitialSearch() {
+        return initialSearchDone;
+    }
+
+    public void setInitialSearch(boolean done) {
+        initialSearchDone = done;
     }
 
     @Override
     public void onStart() {
         if(state.getValue() != SearchingStates.SEARCHING) {
-            active = true;
+
             state.setValue(SearchingStates.SEARCHING);
             bridges.clear();
             bridgeDiscoveryManager.discoverServices("_hue._tcp", NsdManager.PROTOCOL_DNS_SD, bridgeDiscoveryListener);
@@ -85,7 +85,6 @@ public class MultiCastDiscovery implements Discoverable {
     @Override
     public void onStop() {
         if(state.getValue() == SearchingStates.SEARCHING) {
-            active = false;
             state.postValue(bridges.isEmpty() ? SearchingStates.WAITING : SearchingStates.FOUND);
             bridgeDiscoveryManager.stopServiceDiscovery(bridgeDiscoveryListener);
 
@@ -100,6 +99,7 @@ public class MultiCastDiscovery implements Discoverable {
     @Override
     public void onReset() {
         if(state.getValue() != SearchingStates.SEARCHING) {
+            initialSearchDone = false;
             state.postValue(SearchingStates.WAITING);
             bridges.clear();
         }
