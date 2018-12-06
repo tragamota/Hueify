@@ -33,7 +33,7 @@ public class LampFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_lamps_fragment, container, false);
-        //todo: alle views uit layout halen!
+
         statusText = view.findViewById(R.id.Main_lamps_statusText);
         lampRecyclerView = view.findViewById(R.id.Main_lamps_recyclerview);
 
@@ -44,10 +44,12 @@ public class LampFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        lampRecyclerView.setHasFixedSize(true);
         lampRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         lampRecyclerView.setAdapter(lampAdapter = new LampRecyclerAdapter());
 
         viewModel.getLiveLamps().observe(this, lamps -> {
+            System.out.println("Lamps update!");
             lampAdapter.updateLampList(lamps);
             if(lamps != null) {
                 statusText.setVisibility(View.GONE);

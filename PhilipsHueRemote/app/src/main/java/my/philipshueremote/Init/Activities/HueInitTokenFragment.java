@@ -115,6 +115,10 @@ public class HueInitTokenFragment extends Fragment {
     }
 
     private void proceedToNextFragment(Fragment fragment, String tag) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("BRIDGE", viewModel.getBridgeInfo());
+        
+        fragment.setArguments(bundle);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction
                 .setReorderingAllowed(true)

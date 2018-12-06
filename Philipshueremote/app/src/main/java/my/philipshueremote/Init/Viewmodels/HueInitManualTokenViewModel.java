@@ -14,12 +14,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import my.philipshueremote.DataCommunication.VolleyJsonSocket;
+import my.philipshueremote.Database.HueDatabase;
 import my.philipshueremote.Init.Models.BridgeInfo;
 
 public class HueInitManualTokenViewModel extends AndroidViewModel {
     public final int NEVER_SEARCHED = 0, SEARCHING = 1, KEY_NOT_EXIST = 2, KEY_EXIST = 3;
 
     private VolleyJsonSocket volleySocket;
+    private HueDatabase database;
     private JsonRequest accessKeyExistRequest;
 
     private MutableLiveData<Integer> currentState;
@@ -28,6 +30,7 @@ public class HueInitManualTokenViewModel extends AndroidViewModel {
     public HueInitManualTokenViewModel(@NonNull Application application) {
         super(application);
         volleySocket = VolleyJsonSocket.getInstance(application);
+        database = HueDatabase.getInstance(application);
     }
 
     public LiveData<Integer> getCurrentState() {
@@ -53,6 +56,7 @@ public class HueInitManualTokenViewModel extends AndroidViewModel {
                         JSONObject userKeyObject = response.getJSONObject("config").getJSONObject("whitelist");
                         if(userKeyObject.has(manualAccessKey)) {
                             currentState.postValue(KEY_EXIST);
+                            bridgeInfo.setBridgeAccessKey(manualAccessKey);
                         }
                     } catch (JSONException e) {
                         currentState.postValue(KEY_NOT_EXIST);
@@ -62,6 +66,16 @@ public class HueInitManualTokenViewModel extends AndroidViewModel {
                 error -> currentState.postValue(KEY_NOT_EXIST)
         );
         volleySocket.addRequestToQueue(accessKeyExistRequest);
+    }
+
+    public void saveBridgeIntoDatabase() {
+        if(bridgeInfo != null) {
+            if(bridgeInfo.getBridgeAccessKey() != null) {
+                database.performBackgroundQuery(() -> {
+                    database.bridgeDAO().insertBridgeInformation(bridgeInfo);
+                });
+            }
+        }
     }
 
     private synchronized void stopExistingAccessRequest() {

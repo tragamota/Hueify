@@ -111,6 +111,7 @@ public class HueInitManualTokenFragment extends Fragment {
                 }
             }
             else if(currentState == viewModel.KEY_EXIST) {
+                viewModel.saveBridgeIntoDatabase();
                 proceedToNextFragment(new HueInitDoneFragment());
             }
         });
@@ -126,7 +127,7 @@ public class HueInitManualTokenFragment extends Fragment {
     }
 
     private void proceedToNextFragment(Fragment fragment) {
-        getFragmentManager().popBackStack("INIT_SEARCH", 0);
+        getFragmentManager().popBackStack("INIT_SEARCH", 1);
         getFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
                 .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right,

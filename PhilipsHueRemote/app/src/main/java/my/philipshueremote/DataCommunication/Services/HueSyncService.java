@@ -36,9 +36,10 @@ public class HueSyncService {
         socket = VolleyJsonSocket.getInstance(appContext);
         appDatabase = HueDatabase.getInstance(appContext);
         selectedBridge = new MutableLiveData<>();
-        BridgeInfo tempSelectedBridge = new BridgeInfo("192.168.0.33", 80, "bla", "1.2.8", "asdasd", "asdasdad");
-        tempSelectedBridge.setBridgeAccessKey("newdeveloper");
-        selectedBridge.setValue(tempSelectedBridge);
+        appDatabase.performBackgroundQuery(() -> {
+            selectedBridge.postValue(appDatabase.bridgeDAO().getAllBridgeInformation().get(0));
+            startService();
+        });
 
         onLampSuccess = response -> {
             Iterator<String> lampKeys = response.keys();

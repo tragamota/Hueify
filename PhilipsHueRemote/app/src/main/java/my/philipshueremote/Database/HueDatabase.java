@@ -32,8 +32,11 @@ public abstract class HueDatabase extends RoomDatabase {
             Instance = Room.databaseBuilder(appContext, HueDatabase.class, "HUE_DATABASE")
                     .build();
             final int NUM_OF_CORES = Runtime.getRuntime().availableProcessors();
-            Instance.queryPoolExecutor = new ThreadPoolExecutor(NUM_OF_CORES * 2, NUM_OF_CORES * 3,
+            Instance.queryPoolExecutor = new ThreadPoolExecutor(NUM_OF_CORES, NUM_OF_CORES ,
                30, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+            Instance.queryPoolExecutor.allowCoreThreadTimeOut(false);
+            Instance.queryPoolExecutor.prestartCoreThread();
+            Instance.queryPoolExecutor.prestartAllCoreThreads();
         }
         return Instance;
     }

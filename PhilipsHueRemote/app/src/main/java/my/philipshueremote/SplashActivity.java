@@ -27,7 +27,7 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         Intent intent;
-        if(totalBridgeSize < 1) {
+        if(totalBridgeSize >= 1) {
             intent = new Intent(this, MainAppActivity.class);
         }
         else {

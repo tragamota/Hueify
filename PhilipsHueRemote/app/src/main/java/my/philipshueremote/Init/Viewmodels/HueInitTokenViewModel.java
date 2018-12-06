@@ -53,6 +53,10 @@ public class HueInitTokenViewModel extends AndroidViewModel {
         }
     }
 
+    public BridgeInfo getBridgeInfo() {
+        return bridgeInfo;
+    }
+
     public LiveData<String> getAccessToken() {
         if(accessToken == null) {
             accessToken = new MutableLiveData<>();
