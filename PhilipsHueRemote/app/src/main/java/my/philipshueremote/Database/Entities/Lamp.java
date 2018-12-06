@@ -81,7 +81,6 @@ public class Lamp {
             returnLamp.setLampManufacturer(lampObject.getString("manufacturername"));
         }
 
-        //todo: Need to update state object from lamp
         returnLamp.setState(LightState.parseFromJson(returnLamp.getLampType(), lampObject.getJSONObject("state")));
 
         return returnLamp;

@@ -10,7 +10,9 @@ import com.android.volley.toolbox.JsonRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,36 +38,37 @@ public class HueSyncService {
         socket = VolleyJsonSocket.getInstance(appContext);
         appDatabase = HueDatabase.getInstance(appContext);
         selectedBridge = new MutableLiveData<>();
-        appDatabase.performBackgroundQuery(() -> {
-            selectedBridge.postValue(appDatabase.bridgeDAO().getAllBridgeInformation().get(0));
-            startService();
-        });
+        BridgeInfo tempSelectedBridge = new BridgeInfo("192.168.0.33", 80, "bla", "1.2.8", "asdasd", "asdasdad");
+        tempSelectedBridge.setBridgeAccessKey("newdeveloper");
+        selectedBridge.setValue(tempSelectedBridge);
 
         onLampSuccess = response -> {
-            Iterator<String> lampKeys = response.keys();
-            while (lampKeys.hasNext()) {
-                String lampKey = lampKeys.next();
-                appDatabase.performBackgroundQuery(() -> {
-                    Lamp lampEntity;
+            appDatabase.performBackgroundQuery(() -> {
+                List<Lamp> lampsToUpdate = new ArrayList<>();
+                Iterator<String> lampKeys = response.keys();
+                while (lampKeys.hasNext()) {
+                    String lampKey = lampKeys.next();
                     try {
-                        lampEntity = Lamp.parseFromJson(selectedBridge.getValue().getBridgeID(),
+                        lampsToUpdate.add(Lamp.parseFromJson(selectedBridge.getValue().getBridgeID(),
                                 Short.decode(lampKey),
-                                response.getJSONObject(lampKey));
+                                response.getJSONObject(lampKey)));
                     } catch (JSONException e) {
                         e.printStackTrace();
                         return;
                     }
+                }
 
-                    if (appDatabase.lampDAO().containsLamp(lampEntity.getBridgeID(), lampEntity.getLampApiID()) > 0) {
-                        appDatabase.lampDAO().updateLamp(lampEntity);
-                    } else {
-                        appDatabase.lampDAO().insertLamp(lampEntity);
-                    }
-                });
-            }
-            System.out.println("Lamps updated");
-            lampJsonRequest = null;
+                if(appDatabase.lampDAO().containsLamp(selectedBridge.getValue().getBridgeID(), lampsToUpdate.get(0).getLampApiID()) < 0) {
+                    appDatabase.lampDAO().insertLamps(lampsToUpdate);
+                }
+                else {
+                    appDatabase.lampDAO().updateLamps(lampsToUpdate);
+                }
+
+                lampJsonRequest = null;
+            });
         };
+
         onGroupSuccess = response -> {
             Iterator<String> groupKeys = response.keys();
             while (groupKeys.hasNext()) {
@@ -78,6 +81,7 @@ public class HueSyncService {
             }
             groupJsonRequest = null;
         };
+
         onSceneSuccess = response -> {
             Iterator<String> sceneKeys = response.keys();
             while (sceneKeys.hasNext()) {

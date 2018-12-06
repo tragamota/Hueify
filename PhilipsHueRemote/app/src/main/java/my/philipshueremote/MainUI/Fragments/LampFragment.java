@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import my.philipshueremote.DataCommunication.Services.HueSyncService;
 import my.philipshueremote.MainUI.Adapters.LampRecyclerAdapter;
 import my.philipshueremote.MainUI.ViewModels.LampFragmentViewModel;
 import my.philipshueremote.R;
@@ -46,12 +47,15 @@ public class LampFragment extends Fragment {
 
         lampRecyclerView.setHasFixedSize(true);
         lampRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        lampRecyclerView.setAdapter(lampAdapter = new LampRecyclerAdapter());
+        lampRecyclerView.setAdapter(lampAdapter = new LampRecyclerAdapter(getContext().getApplicationContext()));
+
+        HueSyncService.getInstance(getContext()).getSelectedBridge().observe(this, bridgeInfo -> {
+            lampAdapter.updateBridge(bridgeInfo);
+        });
 
         viewModel.getLiveLamps().observe(this, lamps -> {
-            System.out.println("Lamps update!");
-            lampAdapter.updateLampList(lamps);
             if(lamps != null) {
+                lampAdapter.updateLampList(lamps);
                 statusText.setVisibility(View.GONE);
                 lampAdapter.notifyDataSetChanged();
             }
