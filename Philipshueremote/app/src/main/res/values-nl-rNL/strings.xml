@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Hueify</string>
+    <string name="title_activity_hue_init">Hue initialisatie Activiteit</string>
+    <string name="title_activity_hue_init_holder">Hue initialisatie houder Activiteit</string>
+    <string name="hello_blank_fragment">Hoi leeg fragment</string>
+    <string name="main_menu_lamps">Lampen</string>
+    <string name="main_menu_groups">Groepen</string>
+    <string name="main_menu_scenes">Scenes</string>
+    <string name="title_activity_main_setting">Instellingen</string>
+    <string name="pref_header_general">Algemeen</string>
+    <string name="pref_title_social_recommendations">pas sociale aanbevelingen toe</string>
+    <string name="pref_description_social_recommendations">Aanbevelingen voor mensen om contact op te nemen op basis van uw berichtgeschiedenis</string>
+    <string name="pref_title_display_name">Scherm naam</string>
+    <string name="pref_default_display_name">John Smith</string>
+    <string name="pref_title_add_friends_to_messages">voeg vrienden toe aan bericht</string>
+    <string name="pref_header_data_sync">Data en synchronisatie</string>
+    <string name="pref_title_sync_frequency">Synchronisatie frequentie</string>
+    <string name="pref_title_system_sync_settings">Systeem synchronisatie instellingen</string>
+    <string name="pref_header_notifications">Notificaties</string>
+    <string name="pref_title_new_message_notifications">Nieuw bericht notificatie</string>
+    <string name="pref_title_ringtone">Beltone</string>
+    <string name="pref_ringtone_silent">Stil</string>
+    <string name="pref_title_vibrate">Trillen</string>
+</resources>
